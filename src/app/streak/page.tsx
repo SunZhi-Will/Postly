@@ -83,7 +83,8 @@ export default function StreakPage() {
     
     // 將文章按日期分組
     return posts.reduce((acc: PostsByDate, post: Post) => {
-      const date = new Date(post.created_at).toISOString().split('T')[0]
+      const postDate = new Date(post.created_at)
+    const date = `${postDate.getFullYear()}-${String(postDate.getMonth() + 1).padStart(2, '0')}-${String(postDate.getDate()).padStart(2, '0')}`
       if (!acc[date]) {
         acc[date] = []
       }
