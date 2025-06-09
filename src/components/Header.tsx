@@ -140,7 +140,7 @@ export function Header() {
                 <button
                   ref={desktopButtonRef}
                   onClick={toggleDropdown}
-                  className="w-10 h-10 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] relative group"
+                  className="w-10 h-10 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] relative group cursor-pointer"
                 >
                   <div className="w-full h-full rounded-full bg-black/50 flex items-center justify-center overflow-hidden">
                     {session.user.image ? (
@@ -172,7 +172,7 @@ export function Header() {
                     <div className="p-1">
                       <button
                         onClick={handleSignOut}
-                        className="w-full px-3 py-2 text-left text-white/80 hover:text-white bg-transparent hover:bg-red-500/20 rounded-md transition-all duration-200 flex items-center gap-2 group"
+                        className="w-full px-3 py-2 text-left text-white/80 hover:text-white bg-transparent hover:bg-red-500/20 rounded-md transition-all duration-200 flex items-center gap-2 group cursor-pointer"
                       >
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
@@ -194,7 +194,7 @@ export function Header() {
           ) : (
             <button
               onClick={handleLoginClick}
-              className="w-10 h-10 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] group relative flex items-center justify-center hover:from-white/20 hover:to-white/10 transition-all duration-200"
+              className="w-10 h-10 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] group relative flex items-center justify-center hover:from-white/20 hover:to-white/10 transition-all duration-200 cursor-pointer"
             >
               <div className="absolute inset-[1px] rounded-full bg-black/50 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white/80 group-hover:text-white transition-colors duration-150">
@@ -255,7 +255,7 @@ export function Header() {
               <button
                 ref={mobileButtonRef}
                 onClick={toggleDropdown}
-                className="w-9 h-9 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] hover:from-white/20 hover:to-white/10 transition-all duration-200"
+                className="w-9 h-9 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] hover:from-white/20 hover:to-white/10 transition-all duration-200 cursor-pointer"
               >
                 <div className="w-full h-full rounded-full bg-black/50 flex items-center justify-center overflow-hidden">
                   {session.user?.image ? (
@@ -287,7 +287,7 @@ export function Header() {
                   <div className="p-1">
                     <button
                       onClick={handleSignOut}
-                      className="w-full px-3 py-2 text-left text-white/80 hover:text-white bg-transparent hover:bg-red-500/20 rounded-md transition-all duration-200 flex items-center gap-2 group"
+                      className="w-full px-3 py-2 text-left text-white/80 hover:text-white bg-transparent hover:bg-red-500/20 rounded-md transition-all duration-200 flex items-center gap-2 group cursor-pointer"
                     >
                       <svg 
                         xmlns="http://www.w3.org/2000/svg" 
@@ -309,7 +309,7 @@ export function Header() {
         ) : (
           <button
             onClick={handleLoginClick}
-            className="w-9 h-9 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] hover:from-white/20 hover:to-white/10 transition-all duration-200 flex items-center justify-center"
+            className="w-9 h-9 rounded-full bg-gradient-to-b from-white/10 to-white/5 p-[1px] hover:from-white/20 hover:to-white/10 transition-all duration-200 flex items-center justify-center cursor-pointer"
           >
             <div className="absolute inset-[1px] rounded-full bg-black/50 flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white/80 group-hover:text-white transition-colors duration-150">

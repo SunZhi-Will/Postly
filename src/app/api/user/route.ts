@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 const GOOGLE_SCRIPT_URL = process.env.GAS_URL;
+const API_KEY = process.env.GAS_API_KEY;
 
 // 定義使用者資料介面
 interface UserData {
@@ -34,7 +35,7 @@ async function handleUserRequest(
     const url = new URL(GOOGLE_SCRIPT_URL || '');
     url.searchParams.append('table', 'users');
     url.searchParams.append('action', method.toLowerCase());
-
+    url.searchParams.append('apiKey', API_KEY || '');
     const requestOptions: RequestInit = {
       method,
       headers: {
