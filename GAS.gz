@@ -1,0 +1,354 @@
+const API_KEY = '1h8zdTc_iIsf6_yAk3dZvguN_yahXZGJ2LX6T_RHHQmvnbHPQTqBir4TF';
+
+// 驗證 API Key
+function verifyApiKey(e) {
+  const apiKey = e?.parameter?.apiKey;
+  if (!apiKey || apiKey !== API_KEY) throw new Error('Invalid API Key');
+}
+
+// 取得資料
+function doGet(e) {
+  try {
+    verifyApiKey(e);
+    
+    const table = e.parameter.table;
+    if (!table) return _error("Missing 'table' parameter");
+
+    const sheet = getSheetByName(table);
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const rows = data.slice(1).map(row => Object.fromEntries(row.map((cell, i) => [headers[i], cell])));
+
+    // 基本查詢參數
+    const filters = {};
+    Object.keys(e.parameter).forEach(key => {
+      if (key !== 'apiKey' && key !== 'table' && key !== 'include' && headers.includes(key)) {
+        filters[key] = e.parameter[key];
+      }
+    });
+
+    // 根據提供的參數過濾資料
+    let filtered = rows;
+    Object.entries(filters).forEach(([key, value]) => {
+      filtered = filtered.filter(row => String(row[key]) === String(value));
+    });
+
+    // 如果是關聯查詢，加入關聯資料
+    if (e.parameter.include) {
+      const includes = e.parameter.include.split(',');
+      
+      if (includes.includes('author')) {
+        const usersSheet = getSheetByName("users");
+        const usersData = usersSheet.getDataRange().getValues();
+        const usersHeaders = usersData[0];
+        const users = usersData.slice(1).map(row => 
+          Object.fromEntries(row.map((cell, i) => [usersHeaders[i], cell]))
+        );
+
+        filtered = filtered.map(item => {
+          const author = users.find(user => String(user.id) === String(item.author_id));
+          return {
+            ...item,
+            author: author ? {
+              id: author.id,
+              name: author.name,
+              email: author.email,
+              picture: author.picture
+            } : null
+          };
+        });
+      }
+
+      if (includes.includes('post') && table === 'comments') {
+        const postsSheet = getSheetByName("posts");
+        const postsData = postsSheet.getDataRange().getValues();
+        const postsHeaders = postsData[0];
+        const posts = postsData.slice(1).map(row => 
+          Object.fromEntries(row.map((cell, i) => [postsHeaders[i], cell]))
+        );
+
+        filtered = filtered.map(item => {
+          const post = posts.find(post => String(post.id) === String(item.post_id));
+          return {
+            ...item,
+            post: post || null
+          };
+        });
+      }
+
+      if (includes.includes('comments') && table === 'posts') {
+        const commentsSheet = getSheetByName("comments");
+        const commentsData = commentsSheet.getDataRange().getValues();
+        const commentsHeaders = commentsData[0];
+        const comments = commentsData.slice(1).map(row => 
+          Object.fromEntries(row.map((cell, i) => [commentsHeaders[i], cell]))
+        );
+
+        filtered = filtered.map(item => {
+          const postComments = comments.filter(comment => String(comment.post_id) === String(item.id));
+          return {
+            ...item,
+            comments: postComments
+          };
+        });
+      }
+    }
+
+    return ContentService.createTextOutput(JSON.stringify(filtered)).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return _error(err.message);
+  }
+}
+
+// 新增資料
+function doPost(e) {
+  try {
+    verifyApiKey(e);
+    
+    const table = e.parameter.table;
+    if (!table) return _error("Missing 'table' parameter");
+
+    const body = JSON.parse(e.postData.contents);
+    const sheet = getSheetByName(table);
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+    // 檢查必要欄位
+    if (!body.id) {
+      return _error("Missing required field: id");
+    }
+
+    const row = headers.map(h => body[h] !== undefined ? body[h] : "");
+    sheet.appendRow(row);
+
+    return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return _error(err.message);
+  }
+}
+
+// 修改資料
+function doPut(e) {
+  try {
+    verifyApiKey(e);
+    
+    const table = e.parameter.table;
+    const id = e.parameter.id;
+    if (!table || !id) return _error("Missing 'table' or 'id'");
+
+    const body = JSON.parse(e.postData.contents);
+    const userEmail = body.user_email;
+    if (!userEmail) return _error("Missing user_email");
+
+    const userId = getUserIdByEmail(userEmail);
+    if (!userId) return _error("User not found");
+
+    const sheet = getSheetByName(table);
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+
+    const idIndex = headers.indexOf("id");
+    const ownerIndex = headers.indexOf("author_id");
+    if (idIndex === -1 || ownerIndex === -1) return _error("Table must include 'id' and 'author_id'");
+
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][idIndex]) === String(id) && String(data[i][ownerIndex]) === String(userId)) {
+        headers.forEach((h, j) => {
+          if (body[h] !== undefined && h !== "author_id" && h !== "id") {
+            sheet.getRange(i + 1, j + 1).setValue(body[h]);
+          }
+        });
+        return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    return _error("Permission denied or record not found");
+  } catch (err) {
+    return _error(err.message);
+  }
+}
+
+// 刪除資料
+function doDelete(e) {
+  try {
+    verifyApiKey(e);
+    
+    const table = e.parameter.table;
+    const id = e.parameter.id;
+    if (!table || !id) return _error("Missing 'table' or 'id'");
+
+    const body = JSON.parse(e.postData.contents);
+    const userEmail = body.user_email;
+    if (!userEmail) return _error("Missing user_email");
+
+    const userId = getUserIdByEmail(userEmail);
+    if (!userId) return _error("User not found");
+
+    const sheet = getSheetByName(table);
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const idIndex = headers.indexOf("id");
+    const ownerIndex = headers.indexOf("author_id");
+
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][idIndex]) === String(id) && String(data[i][ownerIndex]) === String(userId)) {
+        sheet.deleteRow(i + 1);
+        return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    return _error("Permission denied or record not found");
+  } catch (err) {
+    return _error(err.message);
+  }
+}
+
+// 透過 email 查 user id
+function getUserIdByEmail(email) {
+  const usersSheet = getSheetByName("users");
+  const data = usersSheet.getDataRange().getValues();
+  const headers = data[0];
+  const emailIndex = headers.indexOf("email");
+  const idIndex = headers.indexOf("id");
+  for(let i=1; i<data.length; i++) {
+    if(String(data[i][emailIndex]) === String(email)) return data[i][idIndex];
+  }
+  return null;
+}
+
+// 取得工作表
+function getSheetByName(name) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
+  if (!sheet) throw new Error("Sheet not found: " + name);
+  return sheet;
+}
+
+// 錯誤回應
+function _error(msg) {
+  return ContentService.createTextOutput(JSON.stringify({ error: msg })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 初始化資料表
+function initializeTables() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // 初始化 posts 表
+  let postsSheet = ss.getSheetByName("posts");
+  if (!postsSheet) {
+    postsSheet = ss.insertSheet("posts");
+    postsSheet.getRange(1, 1, 1, 8).setValues([[
+      "id",
+      "content",
+      "author_id",
+      "created_at",
+      "updated_at",
+      "is_anonymous",
+      "streak_count",
+      "last_post_date"
+    ]]);
+  }
+  
+  // 初始化 comments 表
+  let commentsSheet = ss.getSheetByName("comments");
+  if (!commentsSheet) {
+    commentsSheet = ss.insertSheet("comments");
+    commentsSheet.getRange(1, 1, 1, 6).setValues([[
+      "id",
+      "post_id",
+      "content",
+      "author_id",
+      "created_at",
+      "is_anonymous"
+    ]]);
+  }
+  
+  // 初始化 users 表
+  let usersSheet = ss.getSheetByName("users");
+  if (!usersSheet) {
+    usersSheet = ss.insertSheet("users");
+    usersSheet.getRange(1, 1, 1, 4).setValues([[
+      "id",
+      "email",
+      "name",
+      "picture"
+    ]]);
+  }
+}
+
+// 更新連續發文天數
+function updateStreak(userId) {
+  const postsSheet = getSheetByName("posts");
+  const data = postsSheet.getDataRange().getValues();
+  const headers = data[0];
+  
+  const authorIdIndex = headers.indexOf("author_id");
+  const createdAtIndex = headers.indexOf("created_at");
+  const streakCountIndex = headers.indexOf("streak_count");
+  const lastPostDateIndex = headers.indexOf("last_post_date");
+  
+  // 取得用戶的所有文章，並按日期排序
+  const userPosts = data.slice(1)
+    .filter(row => String(row[authorIdIndex]) === String(userId))
+    .map(row => ({
+      created_at: new Date(row[createdAtIndex]),
+      streak_count: row[streakCountIndex] || 0,
+      last_post_date: row[lastPostDateIndex] ? new Date(row[lastPostDateIndex]) : null
+    }))
+    .sort((a, b) => b.created_at - a.created_at);
+
+  if (userPosts.length === 0) return 0;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const lastPost = userPosts[0];
+  const lastPostDate = new Date(lastPost.created_at);
+  lastPostDate.setHours(0, 0, 0, 0);
+  
+  // 如果最後一篇文章是今天發的，不需要更新
+  if (lastPostDate.getTime() === today.getTime()) {
+    return lastPost.streak_count || 0;
+  }
+  
+  // 如果最後一篇文章是昨天發的，增加連續天數
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  if (lastPostDate.getTime() === yesterday.getTime()) {
+    return (lastPost.streak_count || 0) + 1;
+  }
+  
+  // 如果超過一天沒發文，重置連續天數
+  return 1;
+}
+
+// 取得用戶的連續發文天數
+function getStreak(e) {
+  try {
+    verifyApiKey(e);
+    
+    const userEmail = e.parameter.user_email;
+    if (!userEmail) return _error("Missing user_email");
+
+    const userId = getUserIdByEmail(userEmail);
+    if (!userId) return _error("User not found");
+
+    const postsSheet = getSheetByName("posts");
+    const data = postsSheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    const authorIdIndex = headers.indexOf("author_id");
+    const streakCountIndex = headers.indexOf("streak_count");
+    
+    // 取得用戶最新的連續發文天數
+    const userPosts = data.slice(1)
+      .filter(row => String(row[authorIdIndex]) === String(userId))
+      .map(row => row[streakCountIndex] || 0)
+      .sort((a, b) => b - a);
+
+    return ContentService.createTextOutput(JSON.stringify({
+      streak: userPosts[0] || 0
+    })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return _error(err.message);
+  }
+}
+
+

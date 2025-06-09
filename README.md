@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Postly - 反思分享社群平台
 
-## Getting Started
+Postly 是一個專注於個人成長和反思分享的社群平台，讓用戶可以記錄並分享他們的日常反思和見解。
 
-First, run the development server:
+## 功能特點
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### 1. 每日反思提示
+- 獲取每日精選的反思主題
+- 引導用戶進行深度思考
+- 可自由關閉或切換提示
+
+### 2. 反思分享
+- 用戶可以分享個人反思
+- 支持互動功能（點讚、評論）
+- 簡潔的卡片式設計
+
+### 3. 個人成就
+- 連續打卡記錄
+- 個人特質標籤
+- 互動數據統計
+
+### 4. 社群互動
+- 查看社群成員的分享
+- 支持內容分享功能
+- 每日精選內容推薦
+
+## 技術架構
+
+### 前端技術
+- Next.js 14
+- React
+- TypeScript
+- Tailwind CSS
+- Heroicons
+
+### 主要依賴
+```json
+{
+  "dependencies": {
+    "@heroicons/react": "^2.0.0",
+    "@headlessui/react": "^1.0.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
+  }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 目錄結構
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+postly/
+├── src/
+│   ├── app/
+│   │   └── page.tsx          # 主頁面
+│   ├── components/
+│   │   ├── Header.tsx        # 頁面頂部組件
+│   │   ├── ReflectionCard.tsx    # 反思卡片組件
+│   │   └── ReflectionPrompt.tsx  # 反思提示組件
+│   └── utils/
+│       └── cn.ts             # 工具函數
+├── public/
+├── tailwind.config.ts        # Tailwind 配置
+├── package.json
+└── README.md
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 安裝說明
 
-## Learn More
+1. 克隆專案
+```bash
+git clone [repository-url]
+cd postly
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. 安裝依賴
+```bash
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. 啟動開發服務器
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. 打開瀏覽器訪問
+```
+http://localhost:3000
+```
 
-## Deploy on Vercel
+## 組件說明
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Header 組件
+- 固定在頁面頂部
+- 顯示用戶資訊和成就
+- 包含個人特質標籤
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### ReflectionPrompt 組件
+- 顯示每日反思提示
+- 可關閉的卡片設計
+- 引導用戶開始反思
+
+### ReflectionCard 組件
+- 展示用戶的反思內容
+- 支持社交互動功能
+- 簡潔的卡片式設計
+
+## 設計理念
+
+### 視覺設計
+- 採用深色主題
+- 簡約現代的界面風格
+- 注重內容的可讀性
+- 適當的留白和間距
+
+### 交互設計
+- 簡單直觀的操作方式
+- 即時的視覺反饋
+- 流暢的狀態轉換
+
+## 開發指南
+
+### 新增功能
+1. 在 `src/components` 創建新組件
+2. 使用 TypeScript 定義類型
+3. 遵循現有的設計風格
+4. 添加必要的註釋
+
+### 樣式指南
+- 使用 Tailwind CSS 類名
+- 保持一致的命名規範
+- 遵循響應式設計原則
+
+## 待開發功能
+- [ ] 用戶認證系統
+- [ ] 個人資料頁面
+- [ ] 反思歷史記錄
+- [ ] 社群互動增強
+- [ ] 通知系統
+
+## 貢獻指南
+1. Fork 專案
+2. 創建功能分支
+3. 提交更改
+4. 發起 Pull Request
+
+## 授權
+[授權說明]
