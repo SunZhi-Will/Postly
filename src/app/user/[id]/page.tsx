@@ -144,7 +144,7 @@ export default function UserPage() {
             <div className="relative flex border-b border-white/5 mb-6">
               <button
                 onClick={() => setActiveTab('posts')}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-300 text-center ${
+                className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-300 text-center cursor-pointer ${
                   activeTab === 'posts'
                     ? 'text-white'
                     : 'text-white/40 hover:text-white/60'
@@ -154,7 +154,7 @@ export default function UserPage() {
               </button>
               <button
                 onClick={() => setActiveTab('comments')}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-300 text-center ${
+                className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-300 text-center cursor-pointer ${
                   activeTab === 'comments'
                     ? 'text-white'
                     : 'text-white/40 hover:text-white/60'
