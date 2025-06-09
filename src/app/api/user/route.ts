@@ -17,12 +17,26 @@ interface UserData {
 async function getAuthToken() {
   const headersList = await headers();
   const authorization = headersList.get('Authorization');
-  
-  // if (!authorization || !authorization.startsWith('Bearer ')) {
-  //   throw new Error('未提供有效的認證 Token');
-  // }
-  
   return authorization?.split(' ')[1];
+}
+
+// 檢查使用者是否已存在
+async function checkUserExists(email: string) {
+  try {
+    const url = new URL(GOOGLE_SCRIPT_URL || '');
+    url.searchParams.append('table', 'users');
+    url.searchParams.append('action', 'get');
+    url.searchParams.append('apiKey', API_KEY || '');
+    url.searchParams.append('email', email);
+
+    const response = await fetch(url.toString());
+    const data = await response.json();
+    
+    return data && data.length > 0;
+  } catch (error) {
+    console.error('檢查使用者存在時發生錯誤:', error);
+    return false;
+  }
 }
 
 // 處理 API 請求的輔助函數
@@ -95,6 +109,15 @@ export async function POST(request: NextRequest) {
     if (!body.email) {
       throw new Error('缺少必要欄位: email');
     }
+
+    // 檢查使用者是否已存在
+    const userExists = await checkUserExists(body.email);
+    if (userExists) {
+      return NextResponse.json({
+        success: true,
+        message: '使用者已存在',
+      });
+    }
     
     const data = await handleUserRequest('POST', token || '', {
       id: body.id,
@@ -157,4 +180,4 @@ export async function DELETE() {
       { status: 401 }
     );
   }
-} 
+}
