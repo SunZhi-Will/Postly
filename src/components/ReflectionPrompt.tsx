@@ -158,95 +158,111 @@ export function ReflectionPrompt({
 
         {/* 模態對話框 */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50">
-            <div className="bg-[#111113] rounded-xl border border-white/5 w-full max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (showDailyTopic) {
-                          fetchDailyTopic(true);
-                        } else {
-                          setShowDailyTopic(true);
-                        }
-                      }}
-                      disabled={isLoadingTopic}
-                      className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 ${
-                        showDailyTopic 
-                          ? 'bg-white/10 text-white/90' 
-                          : 'bg-white/5 text-white/60 hover:text-white/90'
-                      }`}
-                    >
-                      {isLoadingTopic ? '⌛' : '📝'} 今日主題
-                    </button>
-                    {showDailyTopic && (
-                      <p className="text-white/90 text-xs sm:text-sm">
-                        {isLoadingTopic ? '載入中...' : dailyTopic}
-                      </p>
-                    )}
-                  </div>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsModalOpen(false);
-                      setShowDailyTopic(true);
-                      setContent('');
-                      setIsAnonymous(false);
-                    }}
-                    className="text-white/60 hover:text-white/90 transition-colors duration-150"
-                  >
-                    <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
-
-                <div className="space-y-3 sm:space-y-4">
-                  <textarea
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="w-full bg-white/5 rounded-lg p-3 sm:p-4 text-white/90 resize-none focus:outline-none focus:ring-1 focus:ring-white/20 placeholder-white/40 transition-all duration-200 text-sm sm:text-base"
-                    placeholder={showDailyTopic ? "分享你的想法..." : "分享你的想法..."}
-                    rows={6}
-                    autoFocus
-                    disabled={isCreating}
-                  />
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                    <div className="space-y-1 sm:space-y-2">
-                      <label className="flex items-center gap-2 text-xs sm:text-sm text-white/70">
-                        <input 
-                          type="checkbox"
-                          checked={isAnonymous}
-                          onChange={(e) => setIsAnonymous(e.target.checked)}
-                          className="rounded bg-white/5 border-white/20 text-white focus:ring-white/20 transition-colors duration-200"
-                          disabled={isCreating}
-                        />
-                        匿名發布
-                      </label>
-                      <p className="text-[10px] sm:text-xs text-white/60">
-                        每日只能發布一篇文章，請確保內容有意義且真誠
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button 
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fade-in">
+            <div 
+              className={`
+                bg-[#111113] w-full h-[100dvh] sm:h-auto sm:w-[680px] 
+                transform transition-all duration-300 ease-out
+                ${isModalOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
+                sm:translate-y-0 sm:rounded-xl sm:border sm:border-white/5
+                sm:max-h-[80vh] 
+                flex flex-col
+              `}
+            >
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between sticky top-0 bg-[#111113] py-2 -mt-2">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setIsModalOpen(false);
-                          setContent('');
-                          setIsAnonymous(false);
+                          if (showDailyTopic) {
+                            fetchDailyTopic(true);
+                          } else {
+                            setShowDailyTopic(true);
+                          }
                         }}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white/60 hover:text-white/90 transition-colors duration-150"
-                        disabled={isCreating}
+                        disabled={isLoadingTopic}
+                        className={`shrink-0 text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 ${
+                          showDailyTopic 
+                            ? 'bg-white/10 text-white/90' 
+                            : 'bg-white/5 text-white/60 hover:text-white/90'
+                        }`}
                       >
-                        取消
+                        {isLoadingTopic ? '⌛' : '📝'} 今日主題
                       </button>
-                      <button 
-                        onClick={handleSubmit}
-                        disabled={isCreating || !content.trim()}
-                        className="bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:hover:bg-white/10 text-white/90 hover:text-white rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-200"
-                      >
-                        {isCreating ? '發布中...' : '發布文章'}
-                      </button>
+                      {showDailyTopic && (
+                        <p className="text-white/90 text-xs sm:text-sm truncate">
+                          {isLoadingTopic ? '載入中...' : dailyTopic}
+                        </p>
+                      )}
+                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsModalOpen(false);
+                        setShowDailyTopic(true);
+                        setContent('');
+                        setIsAnonymous(false);
+                      }}
+                      className="text-white/60 hover:text-white/90 transition-colors duration-150 ml-4"
+                    >
+                      <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                  </div>
+  
+                  <div className="relative h-[calc(100vh-12rem)] sm:h-[400px]">
+                    <textarea
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      className="w-full h-[80%] bg-transparent sm:bg-white/5 sm:rounded-lg sm:p-5 text-white/90 resize-none focus:outline-none sm:focus:ring-1 sm:focus:ring-white/20 placeholder-white/40 transition-all duration-200 text-base p-0"
+                      placeholder={showDailyTopic ? "分享你的想法..." : "分享你的想法..."}
+                      autoFocus
+                      disabled={isCreating}
+                    />
+                    
+                    <div className="fixed bottom-0 left-0 right-0 bg-[#111113] border-t border-white/5 p-4 sm:static sm:mt-4 sm:border-0 sm:p-0 sm:bg-transparent">
+                      <div className="flex items-center justify-between gap-3 max-w-2xl mx-auto">
+                        <div className="flex items-center gap-4">
+                          <label className="flex items-center gap-2 text-xs sm:text-sm text-white/70">
+                            <input 
+                              type="checkbox"
+                              checked={isAnonymous}
+                              onChange={(e) => setIsAnonymous(e.target.checked)}
+                              className="rounded bg-white/5 border-white/20 text-white focus:ring-white/20 transition-colors duration-200"
+                              disabled={isCreating}
+                            />
+                            匿名發布
+                          </label>
+                          
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsModalOpen(false);
+                              setContent('');
+                              setIsAnonymous(false);
+                            }}
+                            className="hidden sm:block px-4 py-2 text-sm text-white/60 hover:text-white/90 transition-colors duration-150"
+                            disabled={isCreating}
+                          >
+                            取消
+                          </button>
+                          <button 
+                            onClick={handleSubmit}
+                            disabled={isCreating || !content.trim()}
+                            className="bg-white text-black rounded-full sm:rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:hover:bg-white sm:hover:bg-white/90 transition-all duration-200"
+                          >
+                            {isCreating ? '發布中...' : (
+                              <>
+                                <span className="sm:hidden">發布</span>
+                                <span className="hidden sm:inline">發布文章</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -257,118 +273,4 @@ export function ReflectionPrompt({
       </>
     )
   }
-
-  return (
-    <>
-      {/* 浮動按鈕 */}
-      <button
-        onClick={handleClick}
-        className="fixed right-4 bottom-20 sm:right-6 sm:bottom-6 md:right-8 md:bottom-8 lg:right-10 lg:bottom-10 bg-white text-black rounded-full p-3 shadow-lg backdrop-blur-sm hover:bg-white/90 transition-all duration-200 group z-50"
-      >
-        <PlusIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-        <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1.5 bg-[#111113] text-white text-xs sm:text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-lg border border-white/10">
-          {session ? '開始撰寫' : '登入以開始撰寫'}
-        </div>
-      </button>
-
-      {/* 模態對話框 */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50">
-          <div className="bg-[#111113] rounded-xl border border-white/5 w-full max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (showDailyTopic) {
-                        fetchDailyTopic(true);
-                      } else {
-                        setShowDailyTopic(true);
-                      }
-                    }}
-                    disabled={isLoadingTopic}
-                    className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 ${
-                      showDailyTopic 
-                        ? 'bg-white/10 text-white/90' 
-                        : 'bg-white/5 text-white/60 hover:text-white/90'
-                    }`}
-                  >
-                    {isLoadingTopic ? '⌛' : '📝'} 今日主題
-                  </button>
-                  {showDailyTopic && (
-                    <p className="text-white/90 text-xs sm:text-sm">
-                      {isLoadingTopic ? '載入中...' : dailyTopic}
-                    </p>
-                  )}
-                </div>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsModalOpen(false);
-                    setShowDailyTopic(true);
-                    setContent('');
-                    setIsAnonymous(false);
-                  }}
-                  className="text-white/60 hover:text-white/90 transition-colors duration-150"
-                >
-                  <XMarkIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className="w-full bg-white/5 rounded-lg p-3 sm:p-4 text-white/90 resize-none focus:outline-none focus:ring-1 focus:ring-white/20 placeholder-white/40 transition-all duration-200 text-sm sm:text-base"
-                  placeholder={showDailyTopic ? "分享你的想法..." : "分享你的想法..."}
-                  rows={6}
-                  autoFocus
-                  disabled={isCreating}
-                />
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                  <div className="space-y-1 sm:space-y-2">
-                    <label className="flex items-center gap-2 text-xs sm:text-sm text-white/70">
-                      <input 
-                        type="checkbox"
-                        checked={isAnonymous}
-                        onChange={(e) => setIsAnonymous(e.target.checked)}
-                        className="rounded bg-white/5 border-white/20 text-white focus:ring-white/20 transition-colors duration-200"
-                        disabled={isCreating}
-                      />
-                      匿名發布
-                    </label>
-                    <p className="text-[10px] sm:text-xs text-white/60">
-                      每日只能發布一篇文章，請確保內容有意義且真誠
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsModalOpen(false);
-                        setContent('');
-                        setIsAnonymous(false);
-                      }}
-                      className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white/60 hover:text-white/90 transition-colors duration-150"
-                      disabled={isCreating}
-                    >
-                      取消
-                    </button>
-                    <button 
-                      onClick={handleSubmit}
-                      disabled={isCreating || !content.trim()}
-                      className="bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:hover:bg-white/10 text-white/90 hover:text-white rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm transition-all duration-200"
-                    >
-                      {isCreating ? '發布中...' : '發布文章'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  )
 }

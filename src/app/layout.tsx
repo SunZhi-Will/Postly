@@ -12,6 +12,11 @@ const inter = Inter({
 export const metadata = {
   title: 'Postly - 分享你的反思',
   description: '一個讓你分享反思和想法的平台',
+  icons: {
+    icon: [
+      { url: '/logo.png' }
+    ]
+  }
 }
 
 export default function RootLayout({

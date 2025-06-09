@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@auth/core": "^0.39.1",
-    "@auth/nextjs": "^0.0.0-380f8d56",
     "@google/genai": "^1.4.0",
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
