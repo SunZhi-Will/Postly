@@ -20,7 +20,7 @@ export function UserProfileHeader({ user, postCount, description }: UserProfileH
           {imageUrl ? (
             <Image
               src={imageUrl}
-              alt={user.name || '用戶頭像'}
+              alt={user.name || 'User Avatar'}
               className="w-24 h-24 rounded-full object-cover ring-2 ring-white/10"
               width={96}
               height={96}
@@ -34,11 +34,11 @@ export function UserProfileHeader({ user, postCount, description }: UserProfileH
           )}
         </div>
         <h2 className="text-xl font-medium text-white/90 mb-4">
-          {user.name || '未命名用戶'}
+          {user.name || 'Anonymous User'}
         </h2>
         {(postCount !== undefined || description) && (
           <p className="text-sm text-white/60">
-            {description || `${postCount} 篇公開文章`}
+            {description || `${postCount} posts`}
           </p>
         )}
       </div>

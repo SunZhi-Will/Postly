@@ -89,7 +89,7 @@ export function Comments({ postId }: CommentsProps) {
       <div className="w-6 h-6 rounded-full bg-gradient-to-b from-white/10 to-white/5 overflow-hidden">
         <Image
           src={comment.author.picture}
-          alt={comment.author.name || '用戶頭像'}
+          alt={comment.author.name || 'User Avatar'}
           width={24}
           height={24}
           className="w-full h-full object-cover"
@@ -148,7 +148,7 @@ export function Comments({ postId }: CommentsProps) {
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="分享你的想法..."
+                placeholder="Share your thoughts..."
                 className="w-full bg-white/5 rounded-lg p-3 text-sm text-white/90 placeholder-white/40 resize-none focus:outline-none focus:ring-1 focus:ring-white/20 transition-all duration-200"
                 rows={1}
                 disabled={isSubmitting}
@@ -161,7 +161,7 @@ export function Comments({ postId }: CommentsProps) {
               disabled={isSubmitting || !newComment.trim()}
               className="bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:hover:bg-white/10 text-white/90 hover:text-white rounded-lg px-4 py-1.5 text-sm transition-all duration-200"
             >
-              {isSubmitting ? '發布中...' : '發布'}
+              {isSubmitting ? 'Publishing...' : 'Publish'}
             </button>
           </div>
         </form>
@@ -184,7 +184,7 @@ export function Comments({ postId }: CommentsProps) {
                 <div className="bg-white/5 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-white/80 text-sm font-medium">
-                      {comment.is_anonymous ? '匿名用戶' : (comment.author?.name || '未命名用戶')}
+                      {comment.is_anonymous ? 'Anonymous User' : (comment.author?.name || 'Anonymous User')}
                     </span>
                     <time className="text-white/40 text-xs">
                       {new Date(comment.created_at).toLocaleDateString()}
@@ -199,7 +199,7 @@ export function Comments({ postId }: CommentsProps) {
           ))
         ) : (
           <div className="text-center text-white/40 py-6">
-            還沒有任何留言
+            No comments yet
           </div>
         )}
       </div>

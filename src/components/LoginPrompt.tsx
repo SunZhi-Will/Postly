@@ -10,11 +10,11 @@ export function LoginPrompt() {
   const [isDismissed, setIsDismissed] = useState(false)
 
   useEffect(() => {
-    // 如果用戶未登入且未手動關閉提示，則顯示提示
+    // If user is not logged in and hasn't dismissed the prompt, show the prompt
     if (!session && !isDismissed) {
       const timer = setTimeout(() => {
         setIsVisible(true)
-      }, 2000) // 延遲 2 秒顯示
+      }, 2000) // Delay 2 seconds
 
       return () => clearTimeout(timer)
     }

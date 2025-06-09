@@ -1,39 +1,39 @@
-# Postly - 反思分享社群平台
+# Postly - Reflection Sharing Community Platform
 
-Postly 是一個專注於個人成長和反思分享的社群平台，讓用戶可以記錄並分享他們的日常反思和見解。
+Postly is a community platform focused on personal growth and reflection sharing, allowing users to record and share their daily reflections and insights.
 
-## 功能特點
+## Features
 
-### 1. 每日反思提示
-- 獲取每日精選的反思主題
-- 引導用戶進行深度思考
-- 可自由關閉或切換提示
+### 1. Daily Reflection Prompts
+- Get daily curated reflection topics
+- Guide users through deep thinking
+- Optional prompts that can be toggled
 
-### 2. 反思分享
-- 用戶可以分享個人反思
-- 支持互動功能（點讚、評論）
-- 簡潔的卡片式設計
+### 2. Reflection Sharing
+- Users can share personal reflections
+- Interactive features (likes, comments)
+- Clean card-based design
 
-### 3. 個人成就
-- 連續打卡記錄
-- 個人特質標籤
-- 互動數據統計
+### 3. Personal Achievements
+- Streak tracking
+- Personal trait tags
+- Interaction statistics
 
-### 4. 社群互動
-- 查看社群成員的分享
-- 支持內容分享功能
-- 每日精選內容推薦
+### 4. Community Interaction
+- View community members' shares
+- Content sharing functionality
+- Daily featured content recommendations
 
-## 技術架構
+## Technical Architecture
 
-### 前端技術
+### Frontend Technologies
 - Next.js 14
 - React
 - TypeScript
 - Tailwind CSS
 - Heroicons
 
-### 主要依賴
+### Main Dependencies
 ```json
 {
   "dependencies": {
@@ -45,103 +45,102 @@ Postly 是一個專注於個人成長和反思分享的社群平台，讓用戶�
 }
 ```
 
-## 目錄結構
+## Directory Structure
 
 ```
 postly/
 ├── src/
 │   ├── app/
-│   │   └── page.tsx          # 主頁面
+│   │   └── page.tsx          # Main page
 │   ├── components/
-│   │   ├── Header.tsx        # 頁面頂部組件
-│   │   ├── ReflectionCard.tsx    # 反思卡片組件
-│   │   └── ReflectionPrompt.tsx  # 反思提示組件
+│   │   ├── Header.tsx        # Header component
+│   │   ├── ReflectionCard.tsx    # Reflection card component
+│   │   └── ReflectionPrompt.tsx  # Reflection prompt component
 │   └── utils/
-│       └── cn.ts             # 工具函數
+│       └── cn.ts             # Utility functions
 ├── public/
-├── tailwind.config.ts        # Tailwind 配置
+├── tailwind.config.ts        # Tailwind configuration
 ├── package.json
 └── README.md
 ```
 
-## 安裝說明
+## Installation Guide
 
-1. 克隆專案
+1. Clone the project
 ```bash
 git clone [repository-url]
 cd postly
 ```
 
-2. 安裝依賴
+2. Install dependencies
 ```bash
 npm install
 ```
 
-3. 啟動開發服務器
+3. Start development server
 ```bash
 npm run dev
 ```
 
-4. 打開瀏覽器訪問
+4. Open browser and visit
 ```
 http://localhost:3000
 ```
 
-## 組件說明
+## Component Documentation
 
-### Header 組件
-- 固定在頁面頂部
-- 顯示用戶資訊和成就
-- 包含個人特質標籤
+### Header Component
+- Fixed at the top of the page
+- Displays user information and achievements
+- Includes personal trait tags
 
-### ReflectionPrompt 組件
-- 顯示每日反思提示
-- 可關閉的卡片設計
-- 引導用戶開始反思
+### ReflectionPrompt Component
+- Shows daily reflection prompts
+- Closable card design
+- Guides users to start reflecting
 
-### ReflectionCard 組件
-- 展示用戶的反思內容
-- 支持社交互動功能
-- 簡潔的卡片式設計
+### ReflectionCard Component
+- Displays user's reflection content
+- Supports social interaction features
 
-## 設計理念
+## Design Concept
 
-### 視覺設計
-- 採用深色主題
-- 簡約現代的界面風格
-- 注重內容的可讀性
-- 適當的留白和間距
+### Visual Design
+- Use dark theme
+- Simple and modern interface style
+- Focus on readability
+- Appropriate white space and spacing
 
-### 交互設計
-- 簡單直觀的操作方式
-- 即時的視覺反饋
-- 流暢的狀態轉換
+### Interaction Design
+- Simple and intuitive operation
+- Immediate visual feedback
+- Smooth state transition
 
-## 開發指南
+## Development Guide
 
-### 新增功能
-1. 在 `src/components` 創建新組件
-2. 使用 TypeScript 定義類型
-3. 遵循現有的設計風格
-4. 添加必要的註釋
+### New Features
+1. Create new components in `src/components`
+2. Define types using TypeScript
+3. Follow existing design style
+4. Add necessary comments
 
-### 樣式指南
-- 使用 Tailwind CSS 類名
-- 保持一致的命名規範
-- 遵循響應式設計原則
+### Style Guide
+- Use Tailwind CSS class names
+- Maintain consistent naming rules
+- Follow responsive design principles
 
-## 待開發功能
-- [ ] 用戶認證系統
-- [ ] 個人資料頁面
-- [ ] 反思歷史記錄
-- [ ] 社群互動增強
-- [ ] 通知系統
+## Pending Features
+- [ ] User authentication system
+- [ ] Personal data page
+- [ ] Reflection history record
+- [ ] Community interaction enhancement
+- [ ] Notification system
 
-## 貢獻指南
-1. Fork 專案
-2. 創建功能分支
-3. 提交更改
-4. 發起 Pull Request
+## Contribution Guide
+1. Fork the project
+2. Create feature branch
+3. Submit changes
+4. Initiate Pull Request
 
-## 授權
-[授權說明]
+## License
+[License Description]

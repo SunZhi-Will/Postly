@@ -168,7 +168,7 @@ export default function StreakPage() {
           )}
           {hasPost && (
             <div className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-white/60">
-              {postsByDate[dateString].length} 篇
+              {postsByDate[dateString].length} posts
             </div>
           )}
         </button>
@@ -243,14 +243,14 @@ export default function StreakPage() {
               </span>
               {post.is_anonymous && (
                 <span className="px-1 sm:px-1.5 py-0.5 bg-white/10 rounded text-[10px] sm:text-xs text-white/60">
-                  匿名
+                  Anonymous
                 </span>
               )}
               {post.streak_count > 0 && (
                 <div className="flex items-center gap-1 text-orange-400">
                   <FireIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span className="text-[10px] sm:text-xs font-medium">
-                    連續 {post.streak_count} 天
+                    {post.streak_count} days
                   </span>
                 </div>
               )}
@@ -318,7 +318,7 @@ export default function StreakPage() {
                       </span>
                       {comment.is_anonymous && (
                         <span className="px-1 sm:px-1.5 py-0.5 bg-white/10 rounded text-[10px] sm:text-xs text-white/60">
-                          匿名
+                          Anonymous
                         </span>
                       )}
                     </div>
@@ -369,17 +369,17 @@ export default function StreakPage() {
           <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-lg p-3 mb-4">
             <div className="flex items-center gap-2 mb-2">
               <FireIcon className="w-5 h-5 text-orange-400" />
-              <h1 className="text-lg font-medium">連續發文記錄</h1>
+              <h1 className="text-lg font-medium">Streak Record</h1>
             </div>
             
             <div className="flex gap-3">
               <div className="flex-1 bg-black/30 rounded-lg p-2">
-                <p className="text-white/60 text-xs">目前連續</p>
-                <p className="text-xl font-medium text-orange-400">{currentStreak} 天</p>
+                <p className="text-white/60 text-xs">Current Streak</p>
+                <p className="text-xl font-medium text-orange-400">{currentStreak} days</p>
               </div>
               <div className="flex-1 bg-black/30 rounded-lg p-2">
-                <p className="text-white/60 text-xs">總發文數</p>
-                <p className="text-xl font-medium text-orange-400">{streakPosts.length} 篇</p>
+                <p className="text-white/60 text-xs">Total Posts</p>
+                <p className="text-xl font-medium text-orange-400">{streakPosts.length} posts</p>
               </div>
             </div>
           </div>
@@ -409,7 +409,7 @@ export default function StreakPage() {
             </div>
 
             <div className="grid grid-cols-7 gap-2 mb-2 text-sm text-white/60 text-center">
-              {['日', '一', '二', '三', '四', '五', '六'].map(day => (
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                 <div key={day}>{day}</div>
               ))}
             </div>
@@ -439,7 +439,7 @@ export default function StreakPage() {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
-                })} 的文章
+                })} posts
               </h2>
               <button
                 onClick={closeModal}

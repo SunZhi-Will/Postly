@@ -23,7 +23,7 @@ export function ReflectionPrompt({
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [isFloatingButtonVisible, setIsFloatingButtonVisible] = useState(false)
-  const [dailyTopic, setDailyTopic] = useState<string>('分享一個最近改變了你生活的小習慣')
+  const [dailyTopic, setDailyTopic] = useState<string>('Share a recent habit that has changed your life')
   const [isLoadingTopic, setIsLoadingTopic] = useState(false)
   const { data: session } = useSession()
 
@@ -93,7 +93,7 @@ export function ReflectionPrompt({
         onPostCreated?.()
       }
     } catch (error) {
-      console.error('發布文章時發生錯誤:', error)
+      console.error('Error publishing post:', error)
     } finally {
       setIsCreating(false)
     }
@@ -113,9 +113,9 @@ export function ReflectionPrompt({
                 disabled={isLoadingTopic}
                 className="bg-[#111113] rounded-full px-2 py-0.5 hover:bg-[#1a1a1c] transition-colors duration-150 disabled:opacity-50"
               >
-                {isLoadingTopic ? '⌛' : '📝'} 今日主題
+                {isLoadingTopic ? '⌛' : '📝'} Today&apos;s Topic
               </button>
-              <span>{isLoadingTopic ? '載入中...' : dailyTopic}</span>
+              <span>{isLoadingTopic ? 'Loading...' : dailyTopic}</span>
             </div>
           </div>
           <div 
@@ -126,7 +126,7 @@ export function ReflectionPrompt({
               {session?.user?.image ? (
                 <Image
                   src={session.user.image}
-                  alt={session.user.name || '用戶頭像'}
+                  alt={session.user.name || 'User Avatar'}
                   className="rounded-full"
                   width={32}
                   height={32}
@@ -139,7 +139,7 @@ export function ReflectionPrompt({
                 </div>
               )}
               <div className="flex-1 text-sm text-white/50">
-                {session ? '分享你的想法...' : '登入以開始分享...'}
+                {session ? 'Share your thoughts...' : 'Login to Start Writing'}
               </div>
               <PlusIcon className="w-5 h-5 text-white/30" />
             </div>
@@ -154,7 +154,7 @@ export function ReflectionPrompt({
           >
             <PlusIcon className="w-5 h-5 sm:w-6 sm:h-6" />
             <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1.5 bg-[#111113] text-white text-xs sm:text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-lg border border-white/10">
-              {session ? '開始撰寫' : '登入以開始撰寫'}
+              {session ? 'Start Writing' : 'Login to Start Writing'}
             </div>
           </button>
         )}
@@ -192,11 +192,11 @@ export function ReflectionPrompt({
                             : 'bg-white/5 text-white/60 hover:text-white/90'
                         }`}
                       >
-                        {isLoadingTopic ? '⌛' : '📝'} 今日主題
+                        {isLoadingTopic ? '⌛' : '📝'} Today&apos;s Topic
                       </button>
                       {showDailyTopic && (
                         <p className="text-white/90 text-xs sm:text-sm truncate">
-                          {isLoadingTopic ? '載入中...' : dailyTopic}
+                          {isLoadingTopic ? 'Loading...' : dailyTopic}
                         </p>
                       )}
                     </div>
@@ -219,7 +219,7 @@ export function ReflectionPrompt({
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       className="w-full h-[80%] bg-transparent sm:bg-white/5 sm:rounded-lg sm:p-5 text-white/90 resize-none focus:outline-none sm:focus:ring-1 sm:focus:ring-white/20 placeholder-white/40 transition-all duration-200 text-base p-0"
-                      placeholder={showDailyTopic ? "分享你的想法..." : "分享你的想法..."}
+                      placeholder={showDailyTopic ? "Share your thoughts..." : "Share your thoughts..."}
                       autoFocus
                       disabled={isCreating}
                     />
@@ -235,7 +235,7 @@ export function ReflectionPrompt({
                               className="rounded bg-white/5 border-white/20 text-white focus:ring-white/20 transition-colors duration-200"
                               disabled={isCreating}
                             />
-                            匿名發布
+                            Anonymous
                           </label>
                           
                         </div>
@@ -250,17 +250,17 @@ export function ReflectionPrompt({
                             className="hidden sm:block px-4 py-2 text-sm text-white/60 hover:text-white/90 transition-colors duration-150"
                             disabled={isCreating}
                           >
-                            取消
+                            Cancel
                           </button>
                           <button 
                             onClick={handleSubmit}
                             disabled={isCreating || !content.trim()}
                             className="bg-white text-black rounded-full sm:rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:hover:bg-white sm:hover:bg-white/90 transition-all duration-200"
                           >
-                            {isCreating ? '發布中...' : (
+                            {isCreating ? 'Publishing...' : (
                               <>
-                                <span className="sm:hidden">發布</span>
-                                <span className="hidden sm:inline">發布文章</span>
+                                <span className="sm:hidden">Publish</span>
+                                <span className="hidden sm:inline">Publish</span>
                               </>
                             )}
                           </button>

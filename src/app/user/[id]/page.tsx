@@ -31,7 +31,7 @@ export default function UserPage() {
       // 獲取用戶資訊
       const userResponse = await api.getUser(id as string)
       if (!userResponse.success) {
-        setError('找不到此用戶')
+        setError('User not found')
         return
       }
       setUser(userResponse.data)
@@ -89,8 +89,8 @@ export default function UserPage() {
         }
       }
     } catch (error) {
-      console.error('載入用戶資料時發生錯誤:', error)
-      setError('載入用戶資料時發生錯誤')
+      console.error('Error loading user data:', error)
+      setError('Error loading user data')
     } finally {
       setIsLoading(false)
     }

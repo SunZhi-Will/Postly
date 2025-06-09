@@ -145,7 +145,7 @@ export default function ProfilePage() {
         <Header />
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <div className="bg-red-500/10 text-red-500 p-4 rounded-lg text-center">
-            請先登入以查看個人頁面
+            Please login to view your profile
           </div>
         </div>
       </main>
@@ -171,7 +171,7 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <UserProfileHeader 
           user={session.user}
-          description={`${posts.length} 篇文章 · ${comments.length} 則留言`}
+          description={`${posts.length} posts · ${comments.length} comments`}
         />
 
         {/* Tabs */}
@@ -184,7 +184,7 @@ export default function ProfilePage() {
                 : 'text-white/40 hover:text-white/60'
             }`}
           >
-            文章
+            Posts
           </button>
           <button
             onClick={() => setActiveTab('comments')}
@@ -194,7 +194,7 @@ export default function ProfilePage() {
                 : 'text-white/40 hover:text-white/60'
             }`}
           >
-            留言
+            Comments
           </button>
           <div 
             className={`absolute bottom-0 h-0.5 bg-white transition-all duration-300 ease-in-out ${
@@ -224,7 +224,7 @@ export default function ProfilePage() {
               ))
             ) : (
               <div className="text-center text-white/40 py-6">
-                還沒有發表任何文章
+                No posts yet
               </div>
               )}
             </>
@@ -244,11 +244,11 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2 mb-2 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="text-white/70">
-                        {comment.is_anonymous ? session.user.name : (comment.author?.name || '未命名用戶')}
+                        {comment.is_anonymous ? session.user.name : (comment.author?.name || 'Anonymous User')}
                       </span>
                       {comment.is_anonymous && (
                         <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs text-white/60">
-                          匿名
+                          Anonymous
                         </span>
                       )}
                     </div>
@@ -263,8 +263,8 @@ export default function ProfilePage() {
 
                   {/* Referenced Post */}
                   <div className="text-xs text-white/50 bg-[#0A0A0B] rounded p-2">
-                    <div className="mb-1">回覆文章：</div>
-                    <p className="line-clamp-1">{comment.post?.content || '已刪除的文章'}</p>
+                    <div className="mb-1">Reply to post:</div>
+                    <p className="line-clamp-1">{comment.post?.content || 'Deleted post'}</p>
                   </div>
 
                   {/* Expand Button */}
@@ -300,7 +300,7 @@ export default function ProfilePage() {
             ))
           ) : (
             <div className="text-center text-white/40 py-6">
-              還沒有發表任何留言
+              No comments yet
             </div>
           )}
         </div>

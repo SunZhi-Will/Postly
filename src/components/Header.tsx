@@ -91,25 +91,25 @@ export function Header() {
           <Link 
             href="/"
             className={`text-white/80 hover:text-white transition-colors duration-150 group relative w-10 h-10 flex items-center justify-center ${pathname === '/' ? 'text-white bg-gradient-to-r from-white/10 to-white/5 rounded-lg ring-1 ring-white/10' : ''}`}
-            title="首頁"
+            title="Home"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
             <div className="absolute left-full ml-2 px-2 py-1.5 bg-black/90 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-lg border border-white/10">
-              首頁
+              Home
             </div>
           </Link>
           <Link 
             href="/profile"
             className={`text-white/80 hover:text-white transition-colors duration-150 group relative w-10 h-10 flex items-center justify-center ${(pathname === '/profile' || pathname === `/users/${session?.user?.id}`) ? 'text-white bg-gradient-to-r from-white/10 to-white/5 rounded-lg ring-1 ring-white/10' : ''}`}
-            title="個人資料"
+            title="Profile"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
             </svg>
             <div className="absolute left-full ml-2 px-2 py-1.5 bg-black/90 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-lg border border-white/10">
-              個人資料
+              Profile
             </div>
           </Link>
         </div>
@@ -130,7 +130,7 @@ export function Header() {
                   <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
                     <div className="flex items-center gap-2">
                       <FireIcon className="w-4 h-4 text-orange-400" />
-                      <span>連續發文 <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> 天</span>
+                      <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> days</span>
                     </div>
                   </div>
                 </div>
@@ -146,7 +146,7 @@ export function Header() {
                     {session.user.image ? (
                       <Image
                         src={session.user.image}
-                        alt={session.user.name || '用戶頭像'}
+                        alt={session.user.name || 'User Avatar'}
                         width={40}
                         height={40}
                         className="w-full h-full object-cover"
@@ -184,7 +184,7 @@ export function Header() {
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                         </svg>
-                        <span className="font-medium">登出</span>
+                        <span className="font-medium">Logout</span>
                       </button>
                     </div>
                   </div>
@@ -202,7 +202,7 @@ export function Header() {
                 </svg>
               </div>
               <div className="absolute left-full ml-2 px-2 py-1.5 bg-black/90 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-lg border border-white/10">
-                登入
+                Login
               </div>
             </button>
           )}
@@ -214,7 +214,7 @@ export function Header() {
         <Link href="/">
           <button 
             className="text-white/80 hover:text-white transition-colors duration-150 p-2"
-            title="首頁"
+            title="Home"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -225,7 +225,7 @@ export function Header() {
         <Link href="/profile">
           <button 
             className="text-white/80 hover:text-white transition-colors duration-150 p-2"
-            title="個人資料"
+            title="Profile"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -245,7 +245,7 @@ export function Header() {
                 <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
                   <div className="flex items-center gap-2">
                     <FireIcon className="w-4 h-4 text-orange-400" />
-                    <span>連續發文 <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> 天</span>
+                    <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> days</span>
                   </div>
                 </div>
               </div>
@@ -261,7 +261,7 @@ export function Header() {
                   {session.user?.image ? (
                     <Image
                       src={session.user.image}
-                      alt={session.user.name || '用戶頭像'}
+                      alt={session.user.name || 'User Avatar'}
                       width={36}
                       height={36}
                       className="w-full h-full object-cover"
@@ -299,7 +299,7 @@ export function Header() {
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                       </svg>
-                      <span className="font-medium">登出</span>
+                      <span className="font-medium">Logout</span>
                     </button>
                   </div>
                 </div>
