@@ -144,7 +144,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
     return (
       <button
         onClick={handleAuthorClick}
-        className="hover:opacity-80 transition-opacity"
+        className="hover:opacity-80 transition-opacity cursor-pointer"
         title="查看作者頁面"
       >
         {avatarContent}
@@ -187,7 +187,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
     return (
       <button
         onClick={(e) => handleCommentAuthorClick(e, comment)}
-        className="hover:opacity-80 transition-opacity"
+        className="hover:opacity-80 transition-opacity cursor-pointer"
         title="查看作者頁面"
       >
         {avatarContent}
@@ -217,7 +217,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
               ) : (
                 <button
                   onClick={handleAuthorClick}
-                  className="text-white/70 hover:text-white transition-colors"
+                  className="text-white/70 hover:text-white transition-colors cursor-pointer"
                   title="查看作者頁面"
                 >
                   {post.author?.name || '未命名用戶'}
@@ -235,7 +235,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
             </div>
             <button
               onClick={handleShare}
-              className="share-button p-1.5 text-white/50 hover:text-white/80 hover:bg-white/5 rounded-full transition-all duration-200"
+              className="share-button p-1.5 text-white/50 hover:text-white/80 hover:bg-white/5 rounded-full transition-all duration-200 cursor-pointer"
               title="複製文章連結"
             >
               <ShareIcon className="w-4 h-4" />
@@ -256,14 +256,14 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                   e.stopPropagation()
                   setIsCommentOpen(!isCommentOpen)
                 }}
-                className="text-white/50 hover:text-white/80 transition-colors duration-200"
+                className="text-white/50 hover:text-white/80 transition-colors duration-200 cursor-pointer"
               >
                 <span className="text-xs sm:text-sm">{post.comments?.length || comments?.length || 0}</span>
               </button>
             </div>
             {!isExpanded && (
               <button
-                className="text-white/30 hover:text-white/50 transition-colors duration-200"
+                className="text-white/30 hover:text-white/50 transition-colors duration-200 cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -298,7 +298,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                     <button
                       type="submit"
                       disabled={isCreating || !commentContent.trim()}
-                      className="px-4 py-1.5 text-xs bg-white text-black rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="px-4 py-1.5 text-xs bg-white text-black rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                     >
                       {isCreating ? '發表中...' : '發表'}
                     </button>
@@ -352,7 +352,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
               <h3 className="text-lg font-medium text-white">分享文章</h3>
               <button
                 onClick={() => setIsShareModalOpen(false)}
-                className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-1 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
               >
                 <XMarkIcon className="w-5 h-5 text-white/60" />
               </button>
@@ -369,7 +369,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                 />
                 <button
                   onClick={handleCopyLink}
-                  className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg hover:bg-white/90 transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg hover:bg-white/90 transition-colors text-sm font-medium cursor-pointer"
                 >
                   {isCopied ? (
                     <>

@@ -408,9 +408,7 @@ class Api implements ApiService {
 
   async getUserPosts(userId: string): Promise<ApiResponse<Post[]>> {
     try {
-      const response = await this.fetchWithCache<Post[]>(`/users/${userId}/posts`, {
-        user_email: this.userEmail || ''
-      });
+      const response = await this.fetchWithCache<Post[]>(`/users/${userId}/posts`, {});
 
       if (response.success && response.data) {
         // 確保返回的是數組

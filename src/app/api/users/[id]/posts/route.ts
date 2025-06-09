@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 
 const GOOGLE_SCRIPT_URL = process.env.GAS_URL;
 const API_KEY = process.env.GAS_API_KEY;
@@ -10,12 +8,6 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.email) {
-      throw new Error('未提供有效的認證 Token');
-    }
-
     const { id } = await params;
     
     const url = new URL(GOOGLE_SCRIPT_URL as string);

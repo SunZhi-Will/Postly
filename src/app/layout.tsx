@@ -10,11 +10,13 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: 'Postly - 分享你的反思',
-  description: '一個讓你分享反思和想法的平台',
+  title: 'Postly - Share Your Reflections',
+  description: 'A platform for sharing your reflections and thoughts',
   icons: {
     icon: [
-      { url: '/logo.png' }
+      { url: '/Postly.ico', sizes: '32x32' },
+      { url: '/Postly.ico', sizes: '64x64' },
+      { url: '/Postly.ico', sizes: '128x128' }
     ]
   }
 }

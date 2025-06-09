@@ -102,7 +102,7 @@ export function Header() {
           </Link>
           <Link 
             href="/profile"
-            className={`text-white/80 hover:text-white transition-colors duration-150 group relative w-10 h-10 flex items-center justify-center ${pathname === '/profile' ? 'text-white bg-gradient-to-r from-white/10 to-white/5 rounded-lg ring-1 ring-white/10' : ''}`}
+            className={`text-white/80 hover:text-white transition-colors duration-150 group relative w-10 h-10 flex items-center justify-center ${(pathname === '/profile' || pathname === `/users/${session?.user?.id}`) ? 'text-white bg-gradient-to-r from-white/10 to-white/5 rounded-lg ring-1 ring-white/10' : ''}`}
             title="個人資料"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
