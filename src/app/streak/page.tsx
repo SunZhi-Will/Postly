@@ -32,6 +32,20 @@ interface PostsByDate {
   [key: string]: Post[]
 }
 
+interface APIPost {
+  id: string
+  content: string
+  author_id: string
+  is_anonymous: boolean
+  created_at: string
+  streak_count?: number
+}
+
+interface APIResponse {
+  success: boolean
+  data: APIPost[]
+}
+
 export default function StreakPage() {
   const { data: session } = useSession()
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
@@ -47,8 +61,16 @@ export default function StreakPage() {
     queryFn: async () => {
       if (!session?.user?.email) return []
       const response = await fetch(`/api/posts?mine=true&user_email=${session.user.email}`)
-      const data = await response.json()
-      return data
+      const result = (await response.json()) as APIResponse
+      
+      // 將用戶資訊加入每個文章中
+      return result.success ? result.data.map((post: APIPost) => ({
+        ...post,
+        author: session.user?.name || 'Unknown',
+        picture: session.user?.image || null,
+        comments: [], // 如果之後需要評論功能，可以在這裡加入
+        streak_count: post.streak_count || currentStreak // 使用當前的 streak 或 0
+      })) : []
     },
     enabled: !!session?.user?.email,
     staleTime: 1000 * 60 * 5, // 5 minutes
@@ -56,8 +78,11 @@ export default function StreakPage() {
   })
 
   const postsByDate = useMemo(() => {
+    // 確保 streakPosts 是陣列
+    const posts = Array.isArray(streakPosts) ? streakPosts : []
+    
     // 將文章按日期分組
-    return streakPosts.reduce((acc: PostsByDate, post: Post) => {
+    return posts.reduce((acc: PostsByDate, post: Post) => {
       const date = new Date(post.created_at).toISOString().split('T')[0]
       if (!acc[date]) {
         acc[date] = []
@@ -110,7 +135,7 @@ export default function StreakPage() {
 
     // 填充月初的空白日期
     for (let i = 0; i < firstDay; i++) {
-      week.push(<div key={`empty-${i}`} className="h-16 bg-white/5 rounded-lg opacity-50"></div>)
+      week.push(<div key={`empty-${i}`} className="h-12 sm:h-16 bg-white/5 rounded-lg opacity-50"></div>)
     }
 
     // 填充日期
@@ -128,21 +153,21 @@ export default function StreakPage() {
         <button
           key={dateString}
           onClick={() => handleDateClick(dateString)}
-          className={`h-16 rounded-lg p-2 text-left transition-all relative
+          className={`h-12 sm:h-16 rounded-lg p-1 sm:p-2 text-left transition-all relative
             ${hasPost ? 'bg-orange-500/20 hover:bg-orange-500/30' : 'bg-white/5 hover:bg-white/10'}
             ${isSelected ? 'ring-2 ring-orange-500' : ''}
             ${isToday ? 'ring-1 ring-white/20' : ''}
           `}
         >
-          <span className="text-sm font-medium">{day}</span>
+          <span className="text-xs sm:text-sm font-medium">{day}</span>
           {hasPost && (
-            <div className="absolute bottom-2 right-2">
-              <FireIcon className="w-4 h-4 text-orange-400" />
+            <div className="absolute bottom-1 sm:bottom-2 right-1 sm:right-2">
+              <FireIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400" />
             </div>
           )}
           {hasPost && (
-            <div className="mt-1 text-xs text-white/60">
-              {postsByDate[dateString].length} 篇文章
+            <div className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-white/60">
+              {postsByDate[dateString].length} 篇
             </div>
           )}
         </button>
@@ -150,7 +175,7 @@ export default function StreakPage() {
 
       if (week.length === 7) {
         weeks.push(
-          <div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">
+          <div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-1 sm:gap-2">
             {week}
           </div>
         )
@@ -164,12 +189,12 @@ export default function StreakPage() {
         week.push(
           <div
             key={`empty-end-${week.length}`}
-            className="h-16 bg-white/5 rounded-lg opacity-50"
+            className="h-12 sm:h-16 bg-white/5 rounded-lg opacity-50"
           ></div>
         )
       }
       weeks.push(
-        <div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">
+        <div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-1 sm:gap-2">
           {week}
         </div>
       )
@@ -190,46 +215,46 @@ export default function StreakPage() {
     const isExpanded = expandedPosts.has(post.id)
 
     return (
-      <div key={post.id} className="bg-white/5 rounded-lg p-4 space-y-4">
+      <div key={post.id} className="bg-white/5 rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4">
         {/* 文章頭部信息 */}
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2 sm:gap-3">
           <div className="flex-shrink-0">
             <div className={`relative ${post.is_anonymous ? 'opacity-50' : ''}`}>
               {post.picture ? (
                 <Image
                   src={post.picture}
                   alt={post.author}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                  <span className="text-white/80">{post.author?.[0]}</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <span className="text-white/80 text-sm sm:text-base">{post.author?.[0]}</span>
                 </div>
               )}
             </div>
           </div>
           <div className="flex-grow min-w-0">
-            <div className="flex items-center gap-2">
-              <span className={`font-medium truncate ${post.is_anonymous ? 'opacity-50' : ''}`}>
+            <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+              <span className={`font-medium truncate text-sm sm:text-base ${post.is_anonymous ? 'opacity-50' : ''}`}>
                 {post.author}
               </span>
               {post.is_anonymous && (
-                <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs text-white/60">
+                <span className="px-1 sm:px-1.5 py-0.5 bg-white/10 rounded text-[10px] sm:text-xs text-white/60">
                   匿名
                 </span>
               )}
               {post.streak_count > 0 && (
                 <div className="flex items-center gap-1 text-orange-400">
-                  <FireIcon className="w-4 h-4" />
-                  <span className="text-xs font-medium">
+                  <FireIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-[10px] sm:text-xs font-medium">
                     連續 {post.streak_count} 天
                   </span>
                 </div>
               )}
             </div>
-            <p className="text-sm text-white/60">
+            <p className="text-xs sm:text-sm text-white/60">
               {new Date(post.created_at).toLocaleString('zh-TW', {
                 year: 'numeric',
                 month: 'long',
@@ -241,60 +266,60 @@ export default function StreakPage() {
           </div>
           <button
             onClick={() => togglePost(post.id)}
-            className="flex-shrink-0 text-white/60 hover:text-white transition-colors p-1"
+            className="flex-shrink-0 text-white/60 hover:text-white transition-colors p-0.5 sm:p-1"
           >
             {isExpanded ? (
-              <ChevronUpIcon className="w-5 h-5" />
+              <ChevronUpIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             ) : (
-              <ChevronDownIcon className="w-5 h-5" />
+              <ChevronDownIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </button>
         </div>
 
         {/* 文章內容 */}
         <div className={`${isExpanded ? '' : 'line-clamp-3'}`}>
-          <p className="text-white/80 whitespace-pre-wrap">{post.content}</p>
+          <p className="text-sm sm:text-base text-white/80 whitespace-pre-wrap">{post.content}</p>
         </div>
 
         {/* 留言區塊 */}
         {isExpanded && post.comments && post.comments.length > 0 && (
-          <div className="space-y-3 pt-4 border-t border-white/10">
-            <div className="flex items-center gap-2 text-white/60">
-              <ChatBubbleLeftIcon className="w-4 h-4" />
-              <span className="text-sm">留言 ({post.comments.length})</span>
+          <div className="space-y-2 sm:space-y-3 pt-3 sm:pt-4 border-t border-white/10">
+            <div className="flex items-center gap-1 sm:gap-2 text-white/60">
+              <ChatBubbleLeftIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="text-xs sm:text-sm">留言 ({post.comments.length})</span>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {post.comments.map((comment) => (
-                <div key={comment.id} className="flex items-start gap-3">
+                <div key={comment.id} className="flex items-start gap-2 sm:gap-3">
                   <div className="flex-shrink-0">
                     <div className={`relative ${comment.is_anonymous ? 'opacity-50' : ''}`}>
                       {comment.picture ? (
                         <Image
                           src={comment.picture}
                           alt={comment.author}
-                          width={32}
-                          height={32}
-                          className="rounded-full"
+                          width={24}
+                          height={24}
+                          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                          <span className="text-white/80 text-sm">{comment.author?.[0]}</span>
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center">
+                          <span className="text-white/80 text-xs sm:text-sm">{comment.author?.[0]}</span>
                         </div>
                       )}
                     </div>
                   </div>
                   <div className="flex-grow min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className={`font-medium text-sm truncate ${comment.is_anonymous ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                      <span className={`font-medium text-xs sm:text-sm truncate ${comment.is_anonymous ? 'opacity-50' : ''}`}>
                         {comment.author}
                       </span>
                       {comment.is_anonymous && (
-                        <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs text-white/60">
+                        <span className="px-1 sm:px-1.5 py-0.5 bg-white/10 rounded text-[10px] sm:text-xs text-white/60">
                           匿名
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-white/60 mb-1">
+                    <p className="text-[10px] sm:text-xs text-white/60 mb-0.5 sm:mb-1">
                       {new Date(comment.created_at).toLocaleString('zh-TW', {
                         year: 'numeric',
                         month: 'long',
@@ -303,7 +328,7 @@ export default function StreakPage() {
                         minute: '2-digit'
                       })}
                     </p>
-                    <p className="text-sm text-white/80 whitespace-pre-wrap">
+                    <p className="text-xs sm:text-sm text-white/80 whitespace-pre-wrap">
                       {comment.content}
                     </p>
                   </div>

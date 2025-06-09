@@ -213,14 +213,16 @@ export function Header() {
 
       {/* 手機版底部導覽列 */}
       <div className="fixed bottom-0 left-0 right-0 h-16 bg-black/80 backdrop-blur-md border-t border-white/5 flex md:hidden items-center justify-around px-4 z-50">
-        <button 
-          className="text-white/80 hover:text-white transition-colors duration-150 p-2"
-          title="首頁"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-          </svg>
-        </button>
+        <Link href="/">
+          <button 
+            className="text-white/80 hover:text-white transition-colors duration-150 p-2"
+            title="首頁"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+          </button>
+        </Link>
 
         <Link href="/profile">
           <button 
@@ -237,11 +239,17 @@ export function Header() {
           <>
             {/* 連續打卡 */}
             <Link href="/streak">
-              <div className="flex items-center gap-1.5 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full px-3 py-1.5 cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200">
-                <FireIcon className="w-5 h-5 text-orange-400" />
-                <span className="text-white/90 font-medium">
+              <div className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200 group">
+                <FireIcon className="w-6 h-6 text-orange-400" />
+                <span className="absolute text-white/90 font-medium text-sm drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
                   {isLoadingStreak ? '...' : streak}
                 </span>
+                <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <FireIcon className="w-4 h-4 text-orange-400" />
+                    <span>連續發文 <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> 天</span>
+                  </div>
+                </div>
               </div>
             </Link>
 

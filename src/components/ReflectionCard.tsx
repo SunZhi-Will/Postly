@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { Session } from 'next-auth';
 import { ShareIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
+import { formatDistanceToNow, isAfter, subDays, format } from 'date-fns'
+import { zhTW } from 'date-fns/locale'
 
 interface Author {
   id: string;
@@ -39,6 +41,20 @@ interface Props {
   isExpanded?: boolean;
   onExpand?: (id: string) => void;
   user?: Session['user'];
+}
+
+const formatPostDate = (date: string) => {
+  const postDate = new Date(date)
+  const sevenDaysAgo = subDays(new Date(), 7)
+  
+  if (isAfter(postDate, sevenDaysAgo)) {
+    return formatDistanceToNow(postDate, { 
+      addSuffix: true,
+      locale: zhTW 
+    })
+  }
+  
+  return format(postDate, 'yyyy/MM/dd', { locale: zhTW })
 }
 
 export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
@@ -171,7 +187,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
               )}
               <span className="text-white/30">•</span>
               <time className="text-white/50">
-                {new Date(post.created_at).toLocaleDateString()}
+                {formatPostDate(post.created_at)}
               </time>
             </div>
             <button
@@ -260,7 +276,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                         )}
                         <span className="text-white/30">•</span>
                         <time className="text-white/50">
-                          {new Date(comment.created_at).toLocaleDateString()}
+                          {formatPostDate(comment.created_at)}
                         </time>
                       </div>
                       <p className="text-white/90 leading-relaxed">{comment.content}</p>
