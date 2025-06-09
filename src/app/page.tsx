@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useSession } from 'next-auth/react'
 import { Header } from '@/components/Header'
 import { ReflectionPrompt } from '@/components/ReflectionPrompt'
 import { ReflectionCard } from '@/components/ReflectionCard'
@@ -9,6 +10,7 @@ import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import type { Post } from '@/services/api'
 
 export default function Home() {
+  const { data: session } = useSession()
   const [posts, setPosts] = useState<Post[]>([])
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -103,13 +105,15 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         {!selectedPost ? (
           <>
-            <ReflectionPrompt 
-              compact
-              showFloatingButton={true}
-              onPostCreated={handlePostCreated}
-            />
+            {session && (
+              <ReflectionPrompt 
+                compact
+                showFloatingButton={true}
+                onPostCreated={handlePostCreated}
+              />
+            )}
             
-            <div className="space-y-4 mt-8">
+            <div className={`space-y-4 ${session ? 'mt-8' : 'mt-4'}`}>
               {isLoading ? (
                 Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="bg-[#111113] rounded-lg h-48 animate-pulse" />

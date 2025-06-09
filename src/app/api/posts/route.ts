@@ -21,35 +21,38 @@ async function getUserId(email: string): Promise<string> {
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    
-    if (!session?.user?.email) {
-      return new Response(JSON.stringify({ success: false, error: '請先登入' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
-
     const searchParams = request.nextUrl.searchParams
     const requestedEmail = searchParams.get('user_email')
     const mine = searchParams.get('mine') === 'true'
     const include = searchParams.get('include')?.split(',') || []
     const postId = searchParams.get('id')
 
-    if (mine && requestedEmail !== session.user.email) {
-      return new Response(JSON.stringify({ success: false, error: '無權限查看其他用戶的資料' }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      })
+    // 只有在查看個人文章時才需要登入
+    if (mine) {
+      if (!session?.user?.email) {
+        return new Response(JSON.stringify({ success: false, error: '請先登入' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+
+      if (requestedEmail !== session.user.email) {
+        return new Response(JSON.stringify({ success: false, error: '無權限查看其他用戶的資料' }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
     }
 
-    const userId = await getUserId(session.user.email)
+    // 如果是登入用戶，使用其 userId
+    const userId = session?.user?.email ? await getUserId(session.user.email) : null
     const params: Record<string, string> = {}
     
     if (include.length > 0) {
       params.include = include.join(',')
     }
     
-    if (mine) {
+    if (mine && userId) {
       params.author_id = userId
     }
 
@@ -66,7 +69,7 @@ export async function GET(request: NextRequest) {
       is_anonymous: boolean;
     }>>({
       table: 'posts',
-      userId,
+      userId: userId || undefined,
       params
     })
 

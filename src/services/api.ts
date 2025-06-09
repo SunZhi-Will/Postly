@@ -46,7 +46,7 @@ export interface ApiService {
   getRecentPosts(): Promise<string[]>;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 interface CacheData {
   [key: string]: unknown;
@@ -113,7 +113,7 @@ class Api implements ApiService {
     // 只快取 GET 請求
     if (options.method && options.method !== 'GET') {
       try {
-        const response = await fetch(`${BASE_URL}${endpoint}`, options);
+        const response = await fetch(`${BASE_URL}/api${endpoint}`, options);
         const data = await response.json();
         return { 
           success: response.ok, 
@@ -135,7 +135,7 @@ class Api implements ApiService {
 
     try {
       const queryString = new URLSearchParams(params).toString();
-      const url = `${BASE_URL}${endpoint}${queryString ? `?${queryString}` : ''}`;
+      const url = `${BASE_URL}/api${endpoint}${queryString ? `?${queryString}` : ''}`;
       const response = await fetch(url, options);
       const data = await response.json();
 
@@ -173,7 +173,6 @@ class Api implements ApiService {
   async getPosts(): Promise<ApiResponse<Post[]>> {
     try {
       return this.fetchWithCache<Post[]>('/posts', {
-        user_email: this.userEmail || '',
         include: 'author,comments'
       });
     } catch (error) {

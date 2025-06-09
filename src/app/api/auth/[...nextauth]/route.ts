@@ -2,7 +2,7 @@ import NextAuth from "next-auth/next"
 import GoogleProvider from "next-auth/providers/google"
 import jwt from "jsonwebtoken"
 
-const JWT_SECRET = "1h8zdTc_iIsf6_yAk3dZvguN_yahXZGJ2LX6T_RHHQmvnbHPQTqBir4TF" // 與 GAS 端相同的 secret
+const JWT_SECRET = process.env.NEXTAUTH_SECRET!
 
 const handler = NextAuth({
   providers: [
@@ -20,7 +20,7 @@ const handler = NextAuth({
 
       try {
         // 在 signIn callback 中建立或更新使用者資料
-        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
         const response = await fetch(`${baseUrl}/api/user`, {
           method: 'POST',
           headers: {
