@@ -1,5 +1,6 @@
 import { User } from 'next-auth'
 import type { Author } from '@/services/api'
+import Image from 'next/image'
 
 interface UserProfileHeaderProps {
   user: Partial<User | Author> | null
@@ -17,7 +18,7 @@ export function UserProfileHeader({ user, postCount, description }: UserProfileH
       <div className="flex flex-col items-center">
         <div className="relative mb-4">
           {imageUrl ? (
-            <img
+            <Image
               src={imageUrl}
               alt={user.name || '用戶頭像'}
               className="w-24 h-24 rounded-full object-cover ring-2 ring-white/10"

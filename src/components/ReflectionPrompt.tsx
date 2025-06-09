@@ -4,6 +4,7 @@ import { XMarkIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect } from 'react'
 import { useSession, signIn } from 'next-auth/react'
 import { api } from '@/services/api'
+import Image from 'next/image'
 
 interface ReflectionPromptProps {
   compact?: boolean;
@@ -123,7 +124,7 @@ export function ReflectionPrompt({
           >
             <div className="flex items-center gap-3">
               {session?.user?.image ? (
-                <img
+                <Image
                   src={session.user.image}
                   alt={session.user.name || '用戶頭像'}
                   className="w-8 h-8 rounded-full"
