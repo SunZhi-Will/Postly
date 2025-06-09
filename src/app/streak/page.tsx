@@ -284,9 +284,11 @@ export default function StreakPage() {
         {/* 留言區塊 */}
         {isExpanded && post.comments && post.comments.length > 0 && (
           <div className="space-y-2 sm:space-y-3 pt-3 sm:pt-4 border-t border-white/10">
-            <div className="flex items-center gap-1 sm:gap-2 text-white/60">
-              <ChatBubbleLeftIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="text-xs sm:text-sm">留言 ({post.comments.length})</span>
+            <div className="flex items-center justify-between text-white/60">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <ChatBubbleLeftIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="text-xs sm:text-sm">{post.comments.length}</span>
+              </div>
             </div>
             <div className="space-y-3 sm:space-y-4">
               {post.comments.map((comment) => (

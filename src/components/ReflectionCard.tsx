@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useComments } from '@/hooks/useComments'
 import Image from 'next/image'
 import { Session } from 'next-auth';
-import { ShareIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline'
+import { ShareIcon, XMarkIcon, CheckIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow, isAfter, subDays, format } from 'date-fns'
 import { zhTW } from 'date-fns/locale'
@@ -152,6 +152,49 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
     )
   }
 
+  const handleCommentAuthorClick = (e: React.MouseEvent, comment: Comment) => {
+    e.stopPropagation()
+    if (!comment.is_anonymous && comment.author?.id) {
+      router.push(`/user/${comment.author.id}`)
+    }
+  }
+
+  const renderCommentAvatar = (comment: Comment) => {
+    const avatarContent = comment.is_anonymous ? (
+      <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center">
+        <span className="text-xs text-white/60">
+          {comment.is_anonymous ? '?' : (comment.author?.name?.[0] || '?')}
+        </span>
+      </div>
+    ) : (
+      <div className="w-6 h-6 rounded-full overflow-hidden">
+        <Image
+          src={comment.is_anonymous ? user?.image || '' : comment.author?.picture || ''}
+          alt={comment.is_anonymous ? user?.name || '' : comment.author?.name || ''}
+          width={24}
+          height={24}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    )
+
+    // 如果是匿名文章，直接返回頭像
+    if (post.is_anonymous) {
+      return avatarContent
+    }
+
+    // 如果是非匿名文章，包裝在可點擊的按鈕中
+    return (
+      <button
+        onClick={(e) => handleCommentAuthorClick(e, comment)}
+        className="hover:opacity-80 transition-opacity"
+        title="查看作者頁面"
+      >
+        {avatarContent}
+      </button>
+    )
+  }
+
   return (
     <>
       <article 
@@ -206,15 +249,18 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
 
           {/* Actions */}
           <div className="flex items-center justify-between text-xs comment-section">
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                setIsCommentOpen(!isCommentOpen)
-              }}
-              className="text-white/50 hover:text-white/80 transition-colors duration-200"
-            >
-              留言 ({post.comments?.length || comments?.length || 0})
-            </button>
+            <div className="flex items-center gap-1">
+              <ChatBubbleLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsCommentOpen(!isCommentOpen)
+                }}
+                className="text-white/50 hover:text-white/80 transition-colors duration-200"
+              >
+                <span className="text-xs sm:text-sm">{post.comments?.length || comments?.length || 0}</span>
+              </button>
+            </div>
             {!isExpanded && (
               <button
                 className="text-white/30 hover:text-white/50 transition-colors duration-200"
@@ -261,11 +307,12 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
               </form>
 
               {/* Comments List */}
-              {(post.comments || comments)?.length > 0 && (
+              {(comments || post.comments)?.length > 0 && (
                 <div className="space-y-3 pt-3 border-t border-white/5">
-                  {((post.comments || comments) as Comment[])?.map((comment) => (
+                  {((comments || post.comments) as Comment[])?.map((comment) => (
                     <div key={comment.id} className="text-xs space-y-1">
                       <div className="flex items-center gap-2">
+                        {renderCommentAvatar(comment)}
                         <span className="text-white/70">
                           {comment.is_anonymous ? (user?.name || '匿名用戶') : (comment.author?.name || '未命名用戶')}
                         </span>

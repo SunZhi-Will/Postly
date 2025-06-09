@@ -9,6 +9,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'randomuser.me',
+        pathname: '/api/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'api.dicebear.com',
         pathname: '/7.x/**',
       },

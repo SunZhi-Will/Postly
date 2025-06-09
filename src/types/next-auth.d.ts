@@ -10,6 +10,13 @@ declare module 'next-auth' {
       image?: string | null
     }
   }
+
+  interface User {
+    id: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+  }
 }
 
 declare module 'next-auth/jwt' {

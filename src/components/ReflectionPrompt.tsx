@@ -14,7 +14,7 @@ interface ReflectionPromptProps {
 export function ReflectionPrompt({ 
   compact = false, 
   showFloatingButton = false,
-  onPostCreated 
+  onPostCreated
 }: ReflectionPromptProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showDailyTopic, setShowDailyTopic] = useState(true)
@@ -22,6 +22,8 @@ export function ReflectionPrompt({
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [isFloatingButtonVisible, setIsFloatingButtonVisible] = useState(false)
+  const [dailyTopic, setDailyTopic] = useState<string>('分享一個最近改變了你生活的小習慣')
+  const [isLoadingTopic, setIsLoadingTopic] = useState(false)
   const { data: session } = useSession()
 
   // 當 session 改變時，更新 API 用戶信息
@@ -30,6 +32,26 @@ export function ReflectionPrompt({
       api.setUserEmail(session.user.email);
     }
   }, [session]);
+
+  // 獲取每日主題
+  const fetchDailyTopic = async (refresh = false) => {
+    setIsLoadingTopic(true);
+    try {
+      const response = await fetch(`/api/daily-topic${refresh ? '?refresh=true' : ''}`);
+      const data = await response.json();
+      if (data.topic) {
+        setDailyTopic(data.topic);
+      }
+    } catch (error) {
+      console.error('獲取每日主題時發生錯誤:', error);
+    } finally {
+      setIsLoadingTopic(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDailyTopic();
+  }, []); // 只在組件首次加載時獲取主題
 
   // 監聽滾動事件
   useEffect(() => {
@@ -82,8 +104,17 @@ export function ReflectionPrompt({
         <div className="space-y-2">
           <div className="flex items-center gap-2 px-1">
             <div className="text-xs text-white/70 flex items-center gap-1.5">
-              <span className="bg-[#111113] rounded-full px-2 py-0.5">📝 今日主題</span>
-              <span>分享一個最近改變了你生活的小習慣</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fetchDailyTopic(true);
+                }}
+                disabled={isLoadingTopic}
+                className="bg-[#111113] rounded-full px-2 py-0.5 hover:bg-[#1a1a1c] transition-colors duration-150 disabled:opacity-50"
+              >
+                {isLoadingTopic ? '⌛' : '📝'} 今日主題
+              </button>
+              <span>{isLoadingTopic ? '載入中...' : dailyTopic}</span>
             </div>
           </div>
           <div 
@@ -135,19 +166,24 @@ export function ReflectionPrompt({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setShowDailyTopic(!showDailyTopic);
+                        if (showDailyTopic) {
+                          fetchDailyTopic(true);
+                        } else {
+                          setShowDailyTopic(true);
+                        }
                       }}
+                      disabled={isLoadingTopic}
                       className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 ${
                         showDailyTopic 
                           ? 'bg-white/10 text-white/90' 
                           : 'bg-white/5 text-white/60 hover:text-white/90'
                       }`}
                     >
-                      📝 今日主題
+                      {isLoadingTopic ? '⌛' : '📝'} 今日主題
                     </button>
                     {showDailyTopic && (
                       <p className="text-white/90 text-xs sm:text-sm">
-                        分享一個最近改變了你生活的小習慣
+                        {isLoadingTopic ? '載入中...' : dailyTopic}
                       </p>
                     )}
                   </div>
@@ -170,7 +206,7 @@ export function ReflectionPrompt({
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     className="w-full bg-white/5 rounded-lg p-3 sm:p-4 text-white/90 resize-none focus:outline-none focus:ring-1 focus:ring-white/20 placeholder-white/40 transition-all duration-200 text-sm sm:text-base"
-                    placeholder={showDailyTopic ? "分享你的小習慣故事..." : "分享你的想法..."}
+                    placeholder={showDailyTopic ? "分享你的想法..." : "分享你的想法..."}
                     rows={6}
                     autoFocus
                     disabled={isCreating}
@@ -245,19 +281,24 @@ export function ReflectionPrompt({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setShowDailyTopic(!showDailyTopic);
+                      if (showDailyTopic) {
+                        fetchDailyTopic(true);
+                      } else {
+                        setShowDailyTopic(true);
+                      }
                     }}
+                    disabled={isLoadingTopic}
                     className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 ${
                       showDailyTopic 
                         ? 'bg-white/10 text-white/90' 
                         : 'bg-white/5 text-white/60 hover:text-white/90'
                     }`}
                   >
-                    📝 今日主題
+                    {isLoadingTopic ? '⌛' : '📝'} 今日主題
                   </button>
                   {showDailyTopic && (
                     <p className="text-white/90 text-xs sm:text-sm">
-                      分享一個最近改變了你生活的小習慣
+                      {isLoadingTopic ? '載入中...' : dailyTopic}
                     </p>
                   )}
                 </div>
@@ -280,7 +321,7 @@ export function ReflectionPrompt({
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   className="w-full bg-white/5 rounded-lg p-3 sm:p-4 text-white/90 resize-none focus:outline-none focus:ring-1 focus:ring-white/20 placeholder-white/40 transition-all duration-200 text-sm sm:text-base"
-                  placeholder={showDailyTopic ? "分享你的小習慣故事..." : "分享你的想法..."}
+                  placeholder={showDailyTopic ? "分享你的想法..." : "分享你的想法..."}
                   rows={6}
                   autoFocus
                   disabled={isCreating}

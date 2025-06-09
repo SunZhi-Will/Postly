@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { Header } from '@/components/Header'
 import { ReflectionCard } from '@/components/ReflectionCard'
 import { ReflectionPrompt } from '@/components/ReflectionPrompt'
+import { UserProfileHeader } from '@/components/UserProfileHeader'
 import { api } from '@/services/api'
 
 interface Author {
@@ -168,52 +169,38 @@ export default function ProfilePage() {
     <main className="min-h-screen bg-[#0A0A0B] text-white">
       <Header />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        
-
-        {/* Profile Header */}
-        <div className="mt-8 mb-8">
-          <div className="flex items-center space-x-3">
-            {session.user?.image ? (
-              <img
-                src={session.user.image}
-                alt={session.user.name || '用戶頭像'}
-                className="w-10 h-10 rounded-full ring-2 ring-white/10"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-[#111113] ring-2 ring-white/10 flex items-center justify-center">
-                <span className="text-base text-white/80">
-                  {session.user?.name?.[0] || '?'}
-                </span>
-              </div>
-            )}
-            <h2 className="text-lg font-medium tracking-tight text-white/90">
-              {session.user?.name || '未命名用戶'}
-            </h2>
-          </div>
-        </div>
+        <UserProfileHeader 
+          user={session.user}
+          description={`${posts.length} 篇文章 · ${comments.length} 則留言`}
+        />
 
         {/* Tabs */}
-        <div className="flex space-x-1 mb-6 border-b border-white/5">
+        <div className="relative flex border-b border-white/5 mb-6">
           <button
             onClick={() => setActiveTab('posts')}
-            className={`px-4 py-2 text-sm transition-all duration-200 border-b-2 ${
+            className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-300 text-center ${
               activeTab === 'posts'
-                ? 'text-white border-white'
-                : 'text-white/40 border-transparent hover:text-white/60'
+                ? 'text-white'
+                : 'text-white/40 hover:text-white/60'
             }`}
           >
-            文章 ({posts.length})
+            文章
           </button>
           <button
             onClick={() => setActiveTab('comments')}
-            className={`px-4 py-2 text-sm transition-all duration-200 border-b-2 ${
+            className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-300 text-center ${
               activeTab === 'comments'
-                ? 'text-white border-white'
-                : 'text-white/40 border-transparent hover:text-white/60'
+                ? 'text-white'
+                : 'text-white/40 hover:text-white/60'
             }`}
           >
-            留言 ({comments.length})
+            留言
           </button>
+          <div 
+            className={`absolute bottom-0 h-0.5 bg-white transition-all duration-300 ease-in-out ${
+              activeTab === 'posts' ? 'left-0 w-1/2' : 'left-1/2 w-1/2'
+            }`}
+          />
         </div>
 
         {/* Content */}

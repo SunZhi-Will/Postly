@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { Header } from '@/components/Header'
 import { ReflectionCard } from '@/components/ReflectionCard'
+import { UserProfileHeader } from '@/components/UserProfileHeader'
 import { api } from '@/services/api'
 import type { Post, Author } from '@/services/api'
 
@@ -70,37 +71,13 @@ export default function UserPage() {
     <main className="min-h-screen bg-[#0A0A0B] text-white">
       <Header />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* User Profile Header */}
-        {user && (
-          <div className="mb-8">
-            <div className="flex items-center gap-4">
-              {user.picture ? (
-                <img
-                  src={user.picture}
-                  alt={user.name}
-                  className="w-16 h-16 rounded-full ring-2 ring-white/10"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-[#111113] ring-2 ring-white/10 flex items-center justify-center">
-                  <span className="text-2xl text-white/80">
-                    {user.name?.[0] || '?'}
-                  </span>
-                </div>
-              )}
-              <div>
-                <h1 className="text-xl font-medium tracking-tight text-white/90">
-                  {user.name}
-                </h1>
-                <p className="text-sm text-white/60 mt-1">
-                  {posts.length} 篇公開文章
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+        <UserProfileHeader 
+          user={user}
+          postCount={posts.length}
+        />
 
         {/* Posts List */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="bg-[#111113] rounded-lg h-48 animate-pulse" />

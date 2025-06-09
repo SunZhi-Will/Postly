@@ -10,8 +10,8 @@ export interface Post {
   content: string;
   author_id: string;
   created_at: string;
+  updated_at: string;
   is_anonymous: boolean;
-  author?: Author;
 }
 
 export interface Comment {
@@ -43,6 +43,7 @@ export interface ApiService {
   setUserEmail(email: string | null): void;
   getUser(userId: string): Promise<{ success: boolean; data: Author; error?: string }>;
   getUserPosts(userId: string): Promise<ApiResponse<Post[]>>;
+  getRecentPosts(): Promise<string[]>;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
@@ -75,6 +76,9 @@ class Cache {
 }
 
 const localCache = new Cache();
+
+const API_KEY = process.env.GAS_API_KEY;
+const GAS_URL = process.env.GAS_URL;
 
 class Api implements ApiService {
   private userEmail: string | null = null;
@@ -148,6 +152,23 @@ class Api implements ApiService {
     }
   }
 
+  // 獲取最近的五篇文章
+  async getRecentPosts(): Promise<string[]> {
+    try {
+      const response = await fetch(`${GAS_URL}?apiKey=${API_KEY}&table=posts`);
+      const data = await response.json() as Post[];
+      
+      // 按創建時間排序並取最近的5篇
+      return data
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 5)
+        .map(post => post.content);
+    } catch (error) {
+      console.error('獲取文章時發生錯誤:', error);
+      return [];
+    }
+  }
+
   // 公開的 API 呼叫
   async getPosts(): Promise<ApiResponse<Post[]>> {
     try {
@@ -180,6 +201,7 @@ class Api implements ApiService {
           content: '',
           author_id: '',
           created_at: '',
+          updated_at: '',
           is_anonymous: false
         },
         error: response.error || '獲取文章失敗'
@@ -193,6 +215,7 @@ class Api implements ApiService {
           content: '',
           author_id: '',
           created_at: '',
+          updated_at: '',
           is_anonymous: false
         },
         error: '獲取文章失敗'
@@ -317,6 +340,7 @@ class Api implements ApiService {
             content: '',
             author_id: '',
             created_at: '',
+            updated_at: '',
             is_anonymous: false
           },
           error: '請先登入'
@@ -347,6 +371,7 @@ class Api implements ApiService {
           content: '',
           author_id: '',
           created_at: '',
+          updated_at: '',
           is_anonymous: false
         },
         error: '創建文章失敗'
@@ -413,4 +438,5 @@ class Api implements ApiService {
   }
 }
 
+// 只保留一個 api 導出
 export const api = new Api(); 

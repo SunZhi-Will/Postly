@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (mine) {
-      params.mine = 'true'
+      params.author_id = userId
     }
 
     // 如果有指定文章 ID，則只查詢該文章
