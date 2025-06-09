@@ -127,7 +127,9 @@ export function ReflectionPrompt({
                 <Image
                   src={session.user.image}
                   alt={session.user.name || '用戶頭像'}
-                  className="w-8 h-8 rounded-full"
+                  className="rounded-full"
+                  width={32}
+                  height={32}
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-[#0A0A0B] flex items-center justify-center">

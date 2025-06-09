@@ -22,11 +22,11 @@ export default function PostPage() {
       if (response.success && response.data) {
         setPost(response.data as Post)
       } else {
-        setError('找不到此文章')
+        setError('Post not found')
       }
     } catch (error) {
-      console.error('載入文章時發生錯誤:', error)
-      setError('載入文章時發生錯誤')
+      console.error('Error loading post:', error)
+      setError('Error loading post')
     } finally {
       setIsLoading(false)
     }
@@ -59,7 +59,7 @@ export default function PostPage() {
         <Header />
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <div className="bg-red-500/10 text-red-500 p-4 rounded-lg text-center">
-            {error || '找不到此文章'}
+            {error || 'Post not found'}
           </div>
         </div>
       </main>
@@ -75,7 +75,7 @@ export default function PostPage() {
           className="flex items-center gap-1 text-white/60 hover:text-white mb-6 transition-colors"
         >
           <ChevronLeftIcon className="w-5 h-5" />
-          <span>返回文章列表</span>
+          <span>Back to Post List</span>
         </button>
         <ReflectionCard 
           post={post}

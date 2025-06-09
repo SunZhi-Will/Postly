@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0U9EFOZ9lDzrRQI_Imsny8hT2C0M16f2N2FCoGmOlM9yeLWuTPVyvOGkDfHFsU08jQA/exec';
+const GOOGLE_SCRIPT_URL = process.env.GAS_URL;
 
 // 定義使用者資料介面
 interface UserData {
@@ -17,11 +17,11 @@ async function getAuthToken() {
   const headersList = await headers();
   const authorization = headersList.get('Authorization');
   
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new Error('未提供有效的認證 Token');
-  }
+  // if (!authorization || !authorization.startsWith('Bearer ')) {
+  //   throw new Error('未提供有效的認證 Token');
+  // }
   
-  return authorization.split(' ')[1];
+  return authorization?.split(' ')[1];
 }
 
 // 處理 API 請求的輔助函數
@@ -31,7 +31,7 @@ async function handleUserRequest(
   body?: UserData
 ) {
   try {
-    const url = new URL(GOOGLE_SCRIPT_URL);
+    const url = new URL(GOOGLE_SCRIPT_URL || '');
     url.searchParams.append('table', 'users');
     url.searchParams.append('action', method.toLowerCase());
 
@@ -70,7 +70,7 @@ async function handleUserRequest(
 export async function GET() {
   try {
     const token = await getAuthToken();
-    const data = await handleUserRequest('GET', token);
+    const data = await handleUserRequest('GET', token || '');
     return NextResponse.json(data);
   } catch (error) {
     console.error('取得使用者資料錯誤:', error);
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
       throw new Error('缺少必要欄位: email');
     }
     
-    const data = await handleUserRequest('POST', token, {
+    const data = await handleUserRequest('POST', token || '', {
       id: body.id,
       name: body.name,
       email: body.email,
@@ -126,7 +126,7 @@ export async function PUT(request: NextRequest) {
       throw new Error('缺少必要欄位: email');
     }
     
-    const data = await handleUserRequest('PUT', token, body);
+    const data = await handleUserRequest('PUT', token || '', body);
     return NextResponse.json(data);
   } catch (error) {
     console.error('更新使用者資料錯誤:', error);
@@ -144,7 +144,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE() {
   try {
     const token = await getAuthToken();
-    const data = await handleUserRequest('DELETE', token);
+    const data = await handleUserRequest('DELETE', token || '');
     return NextResponse.json(data);
   } catch (error) {
     console.error('刪除使用者錯誤:', error);

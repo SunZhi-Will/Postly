@@ -27,22 +27,22 @@ export function LoginPrompt() {
       <div className="max-w-2xl mx-auto bg-black/90 backdrop-blur-lg rounded-2xl border border-white/10 p-4 shadow-xl">
         <div className="flex items-center justify-between gap-4">
           <p className="text-white/90 text-sm md:text-base">
-            登入以獲得完整體驗，分享你的想法和見解
+            Login to get the full experience, share your thoughts and insights
           </p>
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => signIn('google')}
-              className="bg-white/10 hover:bg-white/20 text-white rounded-lg px-4 py-2 text-sm transition-all duration-200"
+              className="bg-white/10 hover:bg-white/20 text-white rounded-lg px-4 py-2 text-sm transition-all duration-200 cursor-pointer"
             >
-              立即登入
+              Login
             </button>
             <button
               onClick={() => {
                 setIsVisible(false)
                 setIsDismissed(true)
               }}
-              className="text-white/60 hover:text-white/90 p-1 transition-colors duration-150"
-              aria-label="關閉提示"
+              className="text-white/60 hover:text-white/90 p-1 transition-colors duration-150 cursor-pointer"
+              aria-label="Close prompt"
             >
               <XMarkIcon className="w-5 h-5" />
             </button>

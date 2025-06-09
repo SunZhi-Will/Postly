@@ -8,6 +8,7 @@ import { ReflectionCard } from '@/components/ReflectionCard'
 import { api } from '@/services/api'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import type { Post } from '@/services/api'
+import { LoginPrompt } from '@/components/LoginPrompt'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -112,7 +113,7 @@ export default function Home() {
                 onPostCreated={handlePostCreated}
               />
             )}
-            
+            <LoginPrompt />
             <div className={`space-y-4 ${session ? 'mt-8' : 'mt-4'}`}>
               {isLoading ? (
                 Array.from({ length: 3 }).map((_, i) => (
@@ -128,7 +129,7 @@ export default function Home() {
                 ))
               ) : (
                 <div className="text-center text-white/40 py-12">
-                  還沒有任何文章
+                  No posts yet
                 </div>
               )}
             </div>
@@ -140,7 +141,7 @@ export default function Home() {
               className="flex items-center gap-1 text-white/60 hover:text-white mb-6 transition-colors"
             >
               <ChevronLeftIcon className="w-5 h-5" />
-              <span>返回文章列表</span>
+              <span>Back to Posts</span>
             </button>
             <ReflectionCard 
               post={selectedPost}

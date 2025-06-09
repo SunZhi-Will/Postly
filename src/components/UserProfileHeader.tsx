@@ -22,6 +22,8 @@ export function UserProfileHeader({ user, postCount, description }: UserProfileH
               src={imageUrl}
               alt={user.name || '用戶頭像'}
               className="w-24 h-24 rounded-full object-cover ring-2 ring-white/10"
+              width={96}
+              height={96}
             />
           ) : (
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#1a1a1c] to-[#111113] flex items-center justify-center ring-2 ring-white/10">
