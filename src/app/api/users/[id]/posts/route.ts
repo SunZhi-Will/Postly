@@ -7,7 +7,7 @@ const API_KEY = process.env.GAS_API_KEY;
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -16,7 +16,6 @@ export async function GET(
       throw new Error('未提供有效的認證 Token');
     }
 
-    // 等待 params 解析完成
     const { id } = await params;
     
     const url = new URL(GOOGLE_SCRIPT_URL as string);
