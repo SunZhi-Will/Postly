@@ -17,7 +17,6 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user }) {
       if (!user?.email) return false;
-
       try {
         // 在 signIn callback 中建立或更新使用者資料
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
@@ -69,6 +68,9 @@ const handler = NextAuth({
     async session({ session, token }) {
       // 將 token 傳遞給 session
       session.accessToken = token.accessToken
+      if (session.user) {
+        session.user.id = token.sub // sub 是 JWT 標準中用戶 ID 的字段
+      }
       return session
     },
   },

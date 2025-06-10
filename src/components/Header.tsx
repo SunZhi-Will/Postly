@@ -126,8 +126,8 @@ export function Header() {
             </div>
           </Link>
           <Link 
-            href="/profile"
-            className={`text-white/80 hover:text-white transition-colors duration-150 group relative w-10 h-10 flex items-center justify-center ${(pathname === '/profile' || pathname === `/users/${session?.user?.id}`) ? 'text-white bg-gradient-to-r from-white/10 to-white/5 rounded-lg ring-1 ring-white/10' : ''}`}
+            href={session?.user?.id ? `/user/${session.user.id}` : '/'}
+            className={`text-white/80 hover:text-white transition-colors duration-150 group relative w-10 h-10 flex items-center justify-center ${(pathname === `/user/${session?.user?.id}` || pathname === `/user/${encodeURIComponent(session?.user?.email || '')}`) ? 'text-white bg-gradient-to-r from-white/10 to-white/5 rounded-lg ring-1 ring-white/10' : ''}`}
             title="Profile"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
