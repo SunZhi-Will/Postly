@@ -138,7 +138,7 @@ export default function Home() {
           <div>
             <button 
               onClick={handleBackToList}
-              className="flex items-center gap-1 text-white/60 hover:text-white mb-6 transition-colors"
+              className="flex items-center gap-1 text-white/60 hover:text-white mb-6 transition-colors cursor-pointer"
             >
               <ChevronLeftIcon className="w-5 h-5" />
               <span>Back to Posts</span>

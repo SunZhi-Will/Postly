@@ -111,7 +111,7 @@ export function ReflectionPrompt({
                   fetchDailyTopic(true);
                 }}
                 disabled={isLoadingTopic}
-                className="bg-[#111113] rounded-full px-2 py-0.5 hover:bg-[#1a1a1c] transition-colors duration-150 disabled:opacity-50"
+                className="bg-[#111113] rounded-full px-2 py-0.5 hover:bg-[#1a1a1c] transition-colors duration-150 disabled:opacity-50 cursor-pointer"
               >
                 {isLoadingTopic ? '⌛' : '📝'} Today&apos;s Topic
               </button>
@@ -186,7 +186,7 @@ export function ReflectionPrompt({
                           }
                         }}
                         disabled={isLoadingTopic}
-                        className={`shrink-0 text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 ${
+                        className={`shrink-0 text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full transition-all duration-200 cursor-pointer ${
                           showDailyTopic 
                             ? 'bg-white/10 text-white/90' 
                             : 'bg-white/5 text-white/60 hover:text-white/90'

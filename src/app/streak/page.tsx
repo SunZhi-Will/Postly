@@ -256,7 +256,7 @@ export default function StreakPage() {
               )}
             </div>
             <p className="text-xs sm:text-sm text-white/60">
-              {new Date(post.created_at).toLocaleString('zh-TW', {
+              {new Date(post.created_at).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -323,7 +323,7 @@ export default function StreakPage() {
                       )}
                     </div>
                     <p className="text-[10px] sm:text-xs text-white/60 mb-0.5 sm:mb-1">
-                      {new Date(comment.created_at).toLocaleString('zh-TW', {
+                      {new Date(comment.created_at).toLocaleString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
@@ -396,7 +396,7 @@ export default function StreakPage() {
                 </svg>
               </button>
               <h2 className="text-xl font-semibold">
-                {currentMonth.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}
+                {currentMonth.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
               </h2>
               <button
                 onClick={() => changeMonth(1)}
@@ -435,7 +435,7 @@ export default function StreakPage() {
             {/* 標題列 */}
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h2 className="text-xl font-semibold">
-                {new Date(selectedDate).toLocaleDateString('zh-TW', {
+                {new Date(selectedDate).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'

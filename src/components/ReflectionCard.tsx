@@ -195,6 +195,12 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
     )
   }
 
+  // 新增截斷文字的函數
+  const truncateContent = (content: string, maxLength: number) => {
+    if (content.length <= maxLength) return content;
+    return content.slice(0, maxLength) + '...'
+  }
+
   return (
     <>
       <article 
@@ -205,10 +211,10 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
         }`}
         onClick={handleCardClick}
       >
-        <div className="p-3">
+        <div className="p-4 sm:p-6">
           {/* Post Header */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2 text-xs">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3 text-sm">
               {renderAvatar()}
               {post.is_anonymous ? (
                 <span className="text-white/70">
@@ -224,7 +230,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                 </button>
               )}
               {(post.is_anonymous && user?.name) && (
-                <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs text-white/60">
+                <span className="px-2 py-0.5 bg-white/10 rounded text-xs text-white/60">
                   Anonymous
                 </span>
               )}
@@ -235,22 +241,22 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
             </div>
             <button
               onClick={handleShare}
-              className="share-button p-1.5 text-white/50 hover:text-white/80 hover:bg-white/5 rounded-full transition-all duration-200 cursor-pointer"
+              className="share-button p-2 text-white/50 hover:text-white/80 hover:bg-white/5 rounded-full transition-all duration-200 cursor-pointer"
               title="Copy post link"
             >
-              <ShareIcon className="w-4 h-4" />
+              <ShareIcon className="w-5 h-5" />
             </button>
           </div>
 
           {/* Post Content */}
-          <div className="text-sm text-white/90 whitespace-pre-wrap mb-2">
-            {post.content}
+          <div className="text-base text-white/90 whitespace-pre-wrap mb-4 leading-relaxed">
+            {isExpanded ? post.content : truncateContent(post.content, 200)}
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between text-xs comment-section">
-            <div className="flex items-center gap-1">
-              <ChatBubbleLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
+          <div className="flex items-center justify-between text-sm comment-section border-t border-white/5 pt-4">
+            <div className="flex items-center gap-2">
+              <ChatBubbleLeftIcon className="w-4 h-4 text-white/50" />
               <button
                 onClick={(e) => {
                   e.stopPropagation()
@@ -258,13 +264,14 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                 }}
                 className="text-white/50 hover:text-white/80 transition-colors duration-200 cursor-pointer"
               >
-                <span className="text-xs sm:text-sm">{post.comments?.length || comments?.length || 0}</span>
+                <span>{post.comments?.length || comments?.length || 0}</span>
               </button>
             </div>
             {!isExpanded && (
               <button
-                className="text-white/30 hover:text-white/50 transition-colors duration-200 cursor-pointer"
+                className="text-white/30 hover:text-white/50 transition-colors duration-200 cursor-pointer flex items-center gap-1"
               >
+                <span className="text-sm">Read more</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
@@ -274,19 +281,18 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
 
           {/* Comments Section */}
           {(isExpanded || isCommentOpen) && (
-            <div className="comment-section mt-4 space-y-4">
+            <div className="comment-section mt-6 space-y-6">
               {/* Comment Form */}
-              <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className="space-y-3">
+              <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className="space-y-4">
                 <div className="relative">
                   <textarea
                     value={commentContent}
                     onChange={(e) => setCommentContent(e.target.value)}
                     placeholder="Post a comment..."
-                    className="w-full min-h-[100px] p-3 text-sm bg-[#0A0A0B] rounded-lg border border-white/10 placeholder-white/30 text-white/90 focus:outline-none focus:border-white/20 focus:ring-0 transition-colors duration-200 resize-none"
-                    style={{ minHeight: '100px' }}
+                    className="w-full min-h-[120px] p-4 text-sm bg-[#0A0A0B] rounded-lg border border-white/10 placeholder-white/30 text-white/90 focus:outline-none focus:border-white/20 focus:ring-0 transition-colors duration-200 resize-none"
                   />
-                  <div className="absolute bottom-3 right-3 flex items-center gap-3">
-                    <label className="flex items-center gap-2 text-xs text-white/60">
+                  <div className="absolute bottom-4 right-4 flex items-center gap-4">
+                    <label className="flex items-center gap-2 text-sm text-white/60">
                       <input
                         type="checkbox"
                         checked={isAnonymous}
@@ -298,7 +304,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
                     <button
                       type="submit"
                       disabled={isCreating || !commentContent.trim()}
-                      className="px-4 py-1.5 text-xs bg-white text-black rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+                      className="px-5 py-2 text-sm bg-white text-black rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                     >
                       {isCreating ? 'Publishing...' : 'Publish'}
                     </button>
@@ -308,16 +314,16 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
 
               {/* Comments List */}
               {(comments || post.comments)?.length > 0 && (
-                <div className="space-y-3 pt-3 border-t border-white/5">
+                <div className="space-y-4 pt-4 border-t border-white/5">
                   {((comments || post.comments) as Comment[])?.map((comment) => (
-                    <div key={comment.id} className="text-xs space-y-1">
-                      <div className="flex items-center gap-2">
+                    <div key={comment.id} className="text-sm space-y-2">
+                      <div className="flex items-center gap-3">
                         {renderCommentAvatar(comment)}
                         <span className="text-white/70">
                           {comment.is_anonymous ? (user?.name || 'Anonymous User') : (comment.author?.name || 'Anonymous User')}
                         </span>
                         {(comment.is_anonymous && user?.name) && (
-                          <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs text-white/60">
+                          <span className="px-2 py-0.5 bg-white/10 rounded text-xs text-white/60">
                             Anonymous
                           </span>
                         )}
