@@ -3,10 +3,12 @@
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Image from 'next/image'
 import { FireIcon } from '@heroicons/react/24/solid'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useStreak } from '@/hooks/useStreak'
+import { useQuery } from '@tanstack/react-query'
+import { Post } from '@/types'
 
 export function Header() {
   const { data: session } = useSession()
@@ -17,6 +19,29 @@ export function Header() {
   const pathname = usePathname()
   const { data: streakData, isLoading: isLoadingStreak } = useStreak()
   const streak = (streakData as { streak: number })?.streak ?? 0
+  const { data: posts = [] } = useQuery<Post[]>({
+    queryKey: ['streakPosts', session?.user?.email],
+    queryFn: async () => {
+      if (!session?.user?.email) return []
+      const response = await fetch(`/api/posts?mine=true&user_email=${session.user.email}`)
+      const result = await response.json()
+      return result.success ? result.data : []
+    },
+    enabled: !!session?.user?.email,
+  })
+
+  // 檢查今天是否已發文
+  const hasPostedToday = useMemo(() => {
+    if (!posts.length) return false
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const latestPost = posts[0]
+    const postDate = new Date(latestPost.created_at)
+    postDate.setHours(0, 0, 0, 0)
+    
+    return today.getTime() === postDate.getTime()
+  }, [posts])
 
   // 點擊外部關閉下拉選單
   useEffect(() => {
@@ -120,16 +145,16 @@ export function Header() {
             <>
               {/* 連續打卡 */}
               <Link href="/streak">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full group relative cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200 shadow-sm hover:shadow-md">
+                <div className={`flex items-center justify-center w-10 h-10 bg-gradient-to-r ${hasPostedToday ? 'from-orange-500/20 to-yellow-500/20' : 'from-gray-500/20 to-gray-500/20'} rounded-full group relative cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200 shadow-sm hover:shadow-md`}>
                   <div className="relative w-5 h-5">
-                    <FireIcon className="w-5 h-5 text-orange-400 animate-pulse" />
+                    <FireIcon className={`w-5 h-5 ${hasPostedToday ? 'text-orange-400 animate-pulse' : 'text-gray-400'}`} />
                     <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-xs [text-shadow:_0_0_2px_rgb(0_0_0_/_100%)]">
                       {isLoadingStreak ? '...' : streak}
                     </span>
                   </div>
                   <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
                     <div className="flex items-center gap-2">
-                      <FireIcon className="w-4 h-4 text-orange-400" />
+                      <FireIcon className={`w-4 h-4 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
                       <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> days</span>
                     </div>
                   </div>
@@ -237,14 +262,14 @@ export function Header() {
           <>
             {/* 連續打卡 */}
             <Link href="/streak">
-              <div className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200 group">
-                <FireIcon className="w-6 h-6 text-orange-400" />
+              <div className={`relative flex items-center justify-center w-12 h-12 bg-gradient-to-r ${hasPostedToday ? 'from-orange-500/20 to-yellow-500/20' : 'from-gray-500/20 to-gray-500/20'} rounded-full cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200 group`}>
+                <FireIcon className={`w-6 h-6 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
                 <span className="absolute text-white/90 font-medium text-sm drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
                   {isLoadingStreak ? '...' : streak}
                 </span>
                 <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
                   <div className="flex items-center gap-2">
-                    <FireIcon className="w-4 h-4 text-orange-400" />
+                    <FireIcon className={`w-4 h-4 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
                     <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> days</span>
                   </div>
                 </div>

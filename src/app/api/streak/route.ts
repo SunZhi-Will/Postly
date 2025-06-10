@@ -36,18 +36,9 @@ function calculateStreak(posts: Post[]): number {
     new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const latestPostDate = new Date(sortedPosts[0].created_at);
-  latestPostDate.setHours(0, 0, 0, 0);
-
-  // 如果最新的文章不是今天或昨天發的，連續天數為 0
-  const daysDiff = Math.floor((today.getTime() - latestPostDate.getTime()) / (1000 * 60 * 60 * 24));
-  if (daysDiff > 1) return 0;
-
-  let streak = 1;
-  let currentDate = latestPostDate;
+  let streak = 1;  // 從第一篇文章開始計算
+  let currentDate = new Date(sortedPosts[0].created_at);
+  currentDate.setHours(0, 0, 0, 0);
 
   // 從第二篇文章開始檢查
   for (let i = 1; i < sortedPosts.length; i++) {
