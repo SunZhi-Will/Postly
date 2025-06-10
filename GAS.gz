@@ -117,6 +117,33 @@ function doPost(e) {
       return _error("Missing required field: id");
     }
 
+    // 如果是更新觀看次數
+    if (body.action === 'updateViews') {
+      const data = sheet.getDataRange().getValues();
+      const idIndex = headers.indexOf("id");
+      const viewsIndex = headers.indexOf("views");
+      
+      if (viewsIndex === -1) {
+        // 如果 views 欄位不存在，添加它
+        sheet.getRange(1, sheet.getLastColumn() + 1).setValue("views");
+        return doPost(e); // 遞迴調用以完成更新
+      }
+
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][idIndex]) === String(body.id)) {
+          const currentViews = data[i][viewsIndex] || 0;
+          sheet.getRange(i + 1, viewsIndex + 1).setValue(currentViews + 1);
+          return ContentService.createTextOutput(JSON.stringify({
+            success: true,
+            views: currentViews + 1
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      
+      return _error("Post not found");
+    }
+
+    // 一般的新增資料處理
     const row = headers.map(h => body[h] !== undefined ? body[h] : "");
     sheet.appendRow(row);
 
@@ -233,7 +260,7 @@ function initializeTables() {
   let postsSheet = ss.getSheetByName("posts");
   if (!postsSheet) {
     postsSheet = ss.insertSheet("posts");
-    postsSheet.getRange(1, 1, 1, 8).setValues([[
+    postsSheet.getRange(1, 1, 1, 9).setValues([[
       "id",
       "content",
       "author_id",
@@ -241,7 +268,8 @@ function initializeTables() {
       "updated_at",
       "is_anonymous",
       "streak_count",
-      "last_post_date"
+      "last_post_date",
+      "views"
     ]]);
   }
   
@@ -346,6 +374,44 @@ function getStreak(e) {
     return ContentService.createTextOutput(JSON.stringify({
       streak: userPosts[0] || 0
     })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return _error(err.message);
+  }
+}
+
+// 更新文章觀看數
+function updateViews(e) {
+  try {
+    verifyApiKey(e);
+    
+    const postId = e.parameter.post_id;
+    if (!postId) return _error("Missing post_id");
+
+    const sheet = getSheetByName("posts");
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    const idIndex = headers.indexOf("id");
+    const viewsIndex = headers.indexOf("views");
+    
+    if (viewsIndex === -1) {
+      // 如果 views 欄位不存在，添加它
+      sheet.getRange(1, sheet.getLastColumn() + 1).setValue("views");
+      return updateViews(e); // 遞迴調用以完成更新
+    }
+
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][idIndex]) === String(postId)) {
+        const currentViews = data[i][viewsIndex] || 0;
+        sheet.getRange(i + 1, viewsIndex + 1).setValue(currentViews + 1);
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
+          views: currentViews + 1
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return _error("Post not found");
   } catch (err) {
     return _error(err.message);
   }

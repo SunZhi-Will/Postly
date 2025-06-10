@@ -31,9 +31,13 @@ interface Post {
   content: string;
   author_id: string;
   created_at: string;
+  updated_at: string;
   is_anonymous: boolean;
-  author?: Author | null;
+  author: Author;
+  likes?: string[];
   comments?: Comment[];
+  tags?: string[];
+  views?: number;
 }
 
 interface Props {
@@ -144,10 +148,18 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
     return (
       <button
         onClick={handleAuthorClick}
-        className="hover:opacity-80 transition-opacity cursor-pointer"
+        className="hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-start gap-2"
         title="View author page"
       >
-        {avatarContent}
+          {avatarContent}
+            <div className="flex flex-col items-start justify-start">
+              <div className="text-sm text-white/60">
+                {post.is_anonymous ? 'Anonymous' : post.author?.name}
+              </div>
+              <div className="text-xs text-white/40">
+                {formatPostDate(post.created_at)}
+              </div>
+            </div>
       </button>
     )
   }
@@ -160,7 +172,7 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
   }
 
   const renderCommentAvatar = (comment: Comment) => {
-    const avatarContent = comment.is_anonymous ? (
+    const avatarContent = comment.is_anonymous || !comment.author?.picture ? (
       <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center">
         <span className="text-xs text-white/60">
           {comment.is_anonymous ? '?' : (comment.author?.name?.[0] || '?')}
@@ -187,11 +199,23 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
     return (
       <button
         onClick={(e) => handleCommentAuthorClick(e, comment)}
-        className="hover:opacity-80 transition-opacity cursor-pointer"
+        className="hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-3"
         title="View author page"
       >
         {avatarContent}
-      </button>
+          <span className="text-white/70">
+            {comment.is_anonymous ? (user?.name || 'Anonymous User') : (comment.author?.name || 'Anonymous User')}
+          </span>
+          {(comment.is_anonymous && user?.name) && (
+            <span className="px-2 py-0.5 bg-white/10 rounded text-xs text-white/60">
+              Anonymous
+            </span>
+          )}
+          <span className="text-white/30">•</span>
+          <time className="text-white/50">
+            {formatPostDate(comment.created_at)}
+          </time>
+        </button>
     )
   }
 
@@ -203,144 +227,98 @@ export function ReflectionCard({ post, isExpanded, onExpand, user }: Props) {
 
   return (
     <>
-      <article 
-        className={`bg-[#111113] rounded-lg transition-all duration-200 ${
-          isExpanded 
-            ? 'ring-1 ring-white/10' 
-            : 'hover:bg-[#16161A] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.05)] cursor-pointer'
-        }`}
+      <div 
+        className={`bg-[#111113] rounded-lg p-6 space-y-4 ${!isExpanded ? 'cursor-pointer hover:bg-[#16161A] transition-colors' : ''}`}
         onClick={handleCardClick}
       >
-        <div className="p-4 sm:p-6">
-          {/* Post Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3 text-sm">
-              {renderAvatar()}
-              {post.is_anonymous ? (
-                <span className="text-white/70">
-                  {user?.name || 'Anonymous User'}
-                </span>
-              ) : (
-                <button
-                  onClick={handleAuthorClick}
-                  className="text-white/70 hover:text-white transition-colors cursor-pointer"
-                  title="View author page"
-                >
-                  {post.author?.name || 'Anonymous User'}
-                </button>
-              )}
-              {(post.is_anonymous && user?.name) && (
-                <span className="px-2 py-0.5 bg-white/10 rounded text-xs text-white/60">
-                  Anonymous
-                </span>
-              )}
-              <span className="text-white/30">•</span>
-              <time className="text-white/50">
-                {formatPostDate(post.created_at)}
-              </time>
-            </div>
+        <div className="flex items-start justify-between">
+        {renderAvatar()}
+          <button
+            className="share-button text-white/40 hover:text-white transition-colors cursor-pointer"
+            onClick={handleShare}
+          >
+            <ShareIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Post Content */}
+        <div className="text-base text-white/90 whitespace-pre-wrap mb-4 leading-relaxed">
+          {isExpanded ? post.content : truncateContent(post.content, 200)}
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-between text-sm comment-section border-t border-white/5 pt-4">
+          <div className="flex items-center gap-2">
+            <ChatBubbleLeftIcon className="w-4 h-4 text-white/50" />
             <button
-              onClick={handleShare}
-              className="share-button p-2 text-white/50 hover:text-white/80 hover:bg-white/5 rounded-full transition-all duration-200 cursor-pointer"
-              title="Copy post link"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsCommentOpen(!isCommentOpen)
+              }}
+              className="text-white/50 hover:text-white/80 transition-colors duration-200 cursor-pointer"
             >
-              <ShareIcon className="w-5 h-5" />
+              <span>{post.comments?.length || comments?.length || 0}</span>
             </button>
           </div>
-
-          {/* Post Content */}
-          <div className="text-base text-white/90 whitespace-pre-wrap mb-4 leading-relaxed">
-            {isExpanded ? post.content : truncateContent(post.content, 200)}
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center justify-between text-sm comment-section border-t border-white/5 pt-4">
-            <div className="flex items-center gap-2">
-              <ChatBubbleLeftIcon className="w-4 h-4 text-white/50" />
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setIsCommentOpen(!isCommentOpen)
-                }}
-                className="text-white/50 hover:text-white/80 transition-colors duration-200 cursor-pointer"
-              >
-                <span>{post.comments?.length || comments?.length || 0}</span>
-              </button>
-            </div>
-            {!isExpanded && (
-              <button
-                className="text-white/30 hover:text-white/50 transition-colors duration-200 cursor-pointer flex items-center gap-1"
-              >
-                <span className="text-sm">Read more</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            )}
-          </div>
-
-          {/* Comments Section */}
-          {(isExpanded || isCommentOpen) && (
-            <div className="comment-section mt-6 space-y-6">
-              {/* Comment Form */}
-              <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className="space-y-4">
-                <div className="relative">
-                  <textarea
-                    value={commentContent}
-                    onChange={(e) => setCommentContent(e.target.value)}
-                    placeholder="Post a comment..."
-                    className="w-full min-h-[120px] p-4 text-sm bg-[#0A0A0B] rounded-lg border border-white/10 placeholder-white/30 text-white/90 focus:outline-none focus:border-white/20 focus:ring-0 transition-colors duration-200 resize-none"
-                  />
-                  <div className="absolute bottom-4 right-4 flex items-center gap-4">
-                    <label className="flex items-center gap-2 text-sm text-white/60">
-                      <input
-                        type="checkbox"
-                        checked={isAnonymous}
-                        onChange={(e) => setIsAnonymous(e.target.checked)}
-                        className="rounded border-white/20 bg-[#0A0A0B] text-white focus:ring-0 focus:ring-offset-0"
-                      />
-                      Anonymous
-                    </label>
-                    <button
-                      type="submit"
-                      disabled={isCreating || !commentContent.trim()}
-                      className="px-5 py-2 text-sm bg-white text-black rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
-                    >
-                      {isCreating ? 'Publishing...' : 'Publish'}
-                    </button>
-                  </div>
-                </div>
-              </form>
-
-              {/* Comments List */}
-              {(comments || post.comments)?.length > 0 && (
-                <div className="space-y-4 pt-4 border-t border-white/5">
-                  {((comments || post.comments) as Comment[])?.map((comment) => (
-                    <div key={comment.id} className="text-sm space-y-2">
-                      <div className="flex items-center gap-3">
-                        {renderCommentAvatar(comment)}
-                        <span className="text-white/70">
-                          {comment.is_anonymous ? (user?.name || 'Anonymous User') : (comment.author?.name || 'Anonymous User')}
-                        </span>
-                        {(comment.is_anonymous && user?.name) && (
-                          <span className="px-2 py-0.5 bg-white/10 rounded text-xs text-white/60">
-                            Anonymous
-                          </span>
-                        )}
-                        <span className="text-white/30">•</span>
-                        <time className="text-white/50">
-                          {formatPostDate(comment.created_at)}
-                        </time>
-                      </div>
-                      <p className="text-white/90 leading-relaxed">{comment.content}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+          {!isExpanded && (
+            <button
+              className="text-white/30 hover:text-white/50 transition-colors duration-200 cursor-pointer flex items-center gap-1"
+            >
+              <span className="text-sm">Read more</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
           )}
         </div>
-      </article>
+
+        {/* Comments Section */}
+        {(isExpanded || isCommentOpen) && (
+          <div className="comment-section mt-6 space-y-6">
+            {/* Comment Form */}
+            <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className="space-y-4">
+              <div className="relative">
+                <textarea
+                  value={commentContent}
+                  onChange={(e) => setCommentContent(e.target.value)}
+                  placeholder="Post a comment..."
+                  className="w-full min-h-[120px] p-4 text-sm bg-[#0A0A0B] rounded-lg border border-white/10 placeholder-white/30 text-white/90 focus:outline-none focus:border-white/20 focus:ring-0 transition-colors duration-200 resize-none"
+                />
+                <div className="absolute bottom-4 right-4 flex items-center gap-4">
+                  <label className="flex items-center gap-2 text-sm text-white/60">
+                    <input
+                      type="checkbox"
+                      checked={isAnonymous}
+                      onChange={(e) => setIsAnonymous(e.target.checked)}
+                      className="rounded border-white/20 bg-[#0A0A0B] text-white focus:ring-0 focus:ring-offset-0"
+                    />
+                    Anonymous
+                  </label>
+                  <button
+                    type="submit"
+                    disabled={isCreating || !commentContent.trim()}
+                    className="px-5 py-2 text-sm bg-white text-black rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+                  >
+                    {isCreating ? 'Publishing...' : 'Publish'}
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            {/* Comments List */}
+            {(comments || post.comments)?.length > 0 && (
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                {((comments || post.comments) as Comment[])?.map((comment) => (
+                  <div key={comment.id} className="text-sm space-y-2">
+                    {renderCommentAvatar(comment)}
+                    <p className="text-white/90 leading-relaxed">{comment.content}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Share Modal */}
       {isShareModalOpen && (

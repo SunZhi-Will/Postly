@@ -9,6 +9,7 @@ import { api } from '@/services/api'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import type { Post } from '@/services/api'
 import { LoginPrompt } from '@/components/LoginPrompt'
+import { useRecommendations } from '@/hooks/useRecommendations'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -17,6 +18,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const loadingPostRef = useRef<string | null>(null)
+  const { recommendedPosts, addToViewed } = useRecommendations(posts)
+  const [showRecommended, setShowRecommended] = useState(true)
 
   const fetchPosts = async () => {
     try {
@@ -37,6 +40,9 @@ export default function Home() {
   }
 
   const handlePostClick = async (postId: string) => {
+    // 將點擊的文章加入已讀列表
+    addToViewed(postId)
+
     // 如果已經選中這篇文章，則返回列表
     if (selectedPost?.id === postId) {
       setSelectedPost(null)
@@ -58,6 +64,9 @@ export default function Home() {
     try {
       // 標記這篇文章正在載入中
       loadingPostRef.current = postId
+
+      // 增加文章觀看次數
+      await api.updateViews(postId)
 
       // 在背景加載完整的文章資訊（包含留言）
       const response = await api.getPost(postId)
@@ -106,12 +115,46 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         {!selectedPost ? (
           <>
+          <div className="flex justify-end mb-4">
+                  <div className="w-full flex border-b border-white/10">
+                    <button
+                      onClick={() => setShowRecommended(true)}
+                      className={`flex-1 py-3 text-sm transition-all duration-300 relative ${
+                        showRecommended 
+                          ? 'text-white' 
+                          : 'text-white/60 hover:text-white'
+                      }`}
+                    >
+                      Recommended
+                      {showRecommended && (
+                        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white transition-all duration-300" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setShowRecommended(false)}
+                      className={`flex-1 py-3 text-sm transition-all duration-300 relative ${
+                        !showRecommended 
+                          ? 'text-white' 
+                          : 'text-white/60 hover:text-white'
+                      }`}
+                    >
+                      Latest
+                      {!showRecommended && (
+                        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white transition-all duration-300" />
+                      )}
+                    </button>
+                  </div>
+                </div>
             {session && (
-              <ReflectionPrompt 
-                compact
-                showFloatingButton={true}
-                onPostCreated={handlePostCreated}
-              />
+              <>
+              
+                <ReflectionPrompt 
+                  compact
+                  showFloatingButton={true}
+                  onPostCreated={handlePostCreated}
+                />
+                
+              </>
             )}
             <LoginPrompt />
             <div className={`space-y-4 ${session ? 'mt-8' : 'mt-4'}`}>
@@ -119,8 +162,8 @@ export default function Home() {
                 Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="bg-[#111113] rounded-lg h-48 animate-pulse" />
                 ))
-              ) : posts.length > 0 ? (
-                posts.map((post) => (
+              ) : (showRecommended ? recommendedPosts : posts).length > 0 ? (
+                (showRecommended ? recommendedPosts : posts).map((post) => (
                   <ReflectionCard 
                     key={post.id} 
                     post={post}
@@ -129,7 +172,7 @@ export default function Home() {
                 ))
               ) : (
                 <div className="text-center text-white/40 py-12">
-                  No posts yet
+                  {showRecommended ? '沒有推薦文章' : '目前沒有文章'}
                 </div>
               )}
             </div>

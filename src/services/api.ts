@@ -12,6 +12,11 @@ export interface Post {
   created_at: string;
   updated_at: string;
   is_anonymous: boolean;
+  author: Author;
+  views?: number;
+  likes?: string[];
+  comments?: Comment[];
+  tags?: string[];
 }
 
 export interface Comment {
@@ -44,6 +49,7 @@ export interface ApiService {
   getUser(userId: string): Promise<{ success: boolean; data: Author; error?: string }>;
   getUserPosts(userId: string): Promise<ApiResponse<Post[]>>;
   getRecentPosts(): Promise<string[]>;
+  updateViews(postId: string): Promise<ApiResponse<{ views: number }>>;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -201,9 +207,18 @@ class Api implements ApiService {
           author_id: '',
           created_at: '',
           updated_at: '',
-          is_anonymous: false
+          is_anonymous: false,
+          author: { 
+            id: '', 
+            name: '', 
+            email: '',
+            picture: undefined 
+          },
+          likes: [],
+          comments: [],
+          tags: []
         },
-        error: response.error || '獲取文章失敗'
+        error: '獲取文章失敗'
       };
     } catch (error) {
       console.error('獲取文章失敗:', error);
@@ -215,7 +230,16 @@ class Api implements ApiService {
           author_id: '',
           created_at: '',
           updated_at: '',
-          is_anonymous: false
+          is_anonymous: false,
+          author: { 
+            id: '', 
+            name: '', 
+            email: '',
+            picture: undefined 
+          },
+          likes: [],
+          comments: [],
+          tags: []
         },
         error: '獲取文章失敗'
       };
@@ -340,7 +364,16 @@ class Api implements ApiService {
             author_id: '',
             created_at: '',
             updated_at: '',
-            is_anonymous: false
+            is_anonymous: false,
+            author: {
+              id: '',
+              name: '',
+              email: '',
+              picture: undefined
+            },
+            likes: [],
+            comments: [],
+            tags: []
           },
           error: '請先登入'
         };
@@ -371,7 +404,16 @@ class Api implements ApiService {
           author_id: '',
           created_at: '',
           updated_at: '',
-          is_anonymous: false
+          is_anonymous: false,
+          author: {
+            id: '',
+            name: '',
+            email: '',
+            picture: undefined
+          },
+          likes: [],
+          comments: [],
+          tags: []
         },
         error: '創建文章失敗'
       };
@@ -431,6 +473,19 @@ class Api implements ApiService {
         data: [],
         error: '獲取用戶文章失敗'
       };
+    }
+  }
+
+  async updateViews(postId: string): Promise<ApiResponse<{ views: number }>> {
+    try {
+      const response = await fetch(`${BASE_URL}/api/posts/${postId}/views`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      return { success: response.ok, data: data, error: data.error };
+    } catch (error) {
+      console.error('更新觀看數失敗:', error);
+      return { success: false, data: { views: 0 }, error: '更新觀看數失敗' };
     }
   }
 }
