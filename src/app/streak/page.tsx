@@ -84,7 +84,7 @@ export default function StreakPage() {
     // 將文章按日期分組
     return posts.reduce((acc: PostsByDate, post: Post) => {
       const postDate = new Date(post.created_at)
-    const date = `${postDate.getFullYear()}-${String(postDate.getMonth() + 1).padStart(2, '0')}-${String(postDate.getDate()).padStart(2, '0')}`
+      const date = `${postDate.getFullYear()}-${String(postDate.getMonth() + 1).padStart(2, '0')}-${String(postDate.getDate()).padStart(2, '0')}`
       if (!acc[date]) {
         acc[date] = []
       }
@@ -92,6 +92,19 @@ export default function StreakPage() {
       return acc
     }, {})
   }, [streakPosts])
+
+  // 檢查今天是否有發文
+  const today = new Date().toISOString().split('T')[0]
+  const hasPostedToday = useMemo(() => {
+    return postsByDate[today]?.length > 0
+  }, [postsByDate, today])
+
+  // 如果今天沒發文且不是0點，streak應該顯示0
+  const displayStreak = useMemo(() => {
+    const now = new Date()
+    const isAfterMidnight = now.getHours() === 0 && now.getMinutes() < 30
+    return (!hasPostedToday && !isAfterMidnight) ? 0 : currentStreak
+  }, [hasPostedToday, currentStreak])
 
   const togglePost = (postId: string) => {
     setExpandedPosts(prev => {
@@ -154,21 +167,17 @@ export default function StreakPage() {
         <button
           key={dateString}
           onClick={() => handleDateClick(dateString)}
-          className={`h-12 sm:h-16 rounded-lg p-1 sm:p-2 text-left transition-all relative
+          className={`h-12 sm:h-16 rounded-lg p-1 sm:p-2 text-left transition-all relative overflow-hidden
             ${hasPost ? 'bg-orange-500/20 hover:bg-orange-500/30' : 'bg-white/5 hover:bg-white/10'}
             ${isSelected ? 'ring-2 ring-orange-500' : ''}
             ${isToday ? 'ring-1 ring-white/20' : ''}
           `}
         >
-          <span className="text-xs sm:text-sm font-medium">{day}</span>
+          <span className="text-[10px] sm:text-sm font-medium">{day}</span>
           {hasPost && (
-            <div className="absolute bottom-1 sm:bottom-2 right-1 sm:right-2">
-              <FireIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400" />
-            </div>
-          )}
-          {hasPost && (
-            <div className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-white/60">
-              {postsByDate[dateString].length} posts
+            <div className="absolute bottom-0.5 sm:bottom-2 right-0.5 sm:right-2 flex items-center gap-0.5">
+              <span className="text-[8px] sm:text-xs text-white/60">{postsByDate[dateString].length}</span>
+              <FireIcon className={`w-2.5 h-2.5 sm:w-4 sm:h-4 ${dateString === today && !hasPostedToday ? 'text-gray-400' : 'text-orange-400'}`} />
             </div>
           )}
         </button>
@@ -368,14 +377,21 @@ export default function StreakPage() {
           {/* 連續發文統計 */}
           <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-lg p-3 mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <FireIcon className="w-5 h-5 text-orange-400" />
+              <FireIcon className={`w-5 h-5 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
               <h1 className="text-lg font-medium">Streak Record</h1>
             </div>
             
             <div className="flex gap-3">
               <div className="flex-1 bg-black/30 rounded-lg p-2">
                 <p className="text-white/60 text-xs">Current Streak</p>
-                <p className="text-xl font-medium text-orange-400">{currentStreak} days</p>
+                <div className="flex items-center gap-1">
+                  <p className="text-xl font-medium text-orange-400">
+                    {displayStreak} days
+                  </p>
+                  {!hasPostedToday && currentStreak > 0 && (
+                    <span className="text-xs text-red-400">(at risk)</span>
+                  )}
+                </div>
               </div>
               <div className="flex-1 bg-black/30 rounded-lg p-2">
                 <p className="text-white/60 text-xs">Total Posts</p>

@@ -33,15 +33,20 @@ export function Header() {
   // 檢查今天是否已發文
   const hasPostedToday = useMemo(() => {
     if (!posts.length) return false
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const today = new Date().toISOString().split('T')[0]
     
-    const latestPost = posts[0]
-    const postDate = new Date(latestPost.created_at)
-    postDate.setHours(0, 0, 0, 0)
-    
-    return today.getTime() === postDate.getTime()
+    return posts.some(post => {
+      const postDate = new Date(post.created_at)
+      return postDate.toISOString().split('T')[0] === today
+    })
   }, [posts])
+
+  // 計算顯示的 streak
+  const displayStreak = useMemo(() => {
+    const now = new Date()
+    const isAfterMidnight = now.getHours() === 0 && now.getMinutes() < 30
+    return (!hasPostedToday && !isAfterMidnight) ? 0 : streak
+  }, [hasPostedToday, streak])
 
   // 點擊外部關閉下拉選單
   useEffect(() => {
@@ -149,13 +154,13 @@ export function Header() {
                   <div className="relative w-5 h-5">
                     <FireIcon className={`w-5 h-5 ${hasPostedToday ? 'text-orange-400 animate-pulse' : 'text-gray-400'}`} />
                     <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-xs [text-shadow:_0_0_2px_rgb(0_0_0_/_100%)]">
-                      {isLoadingStreak ? '...' : streak}
+                      {isLoadingStreak ? '...' : displayStreak}
                     </span>
                   </div>
                   <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
                     <div className="flex items-center gap-2">
                       <FireIcon className={`w-4 h-4 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
-                      <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> days</span>
+                      <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : displayStreak}</span> days</span>
                     </div>
                   </div>
                 </div>
@@ -265,12 +270,12 @@ export function Header() {
               <div className={`relative flex items-center justify-center w-12 h-12 bg-gradient-to-r ${hasPostedToday ? 'from-orange-500/20 to-yellow-500/20' : 'from-gray-500/20 to-gray-500/20'} rounded-full cursor-pointer hover:from-orange-500/30 hover:to-yellow-500/30 transition-all duration-200 group`}>
                 <FireIcon className={`w-6 h-6 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
                 <span className="absolute text-white/90 font-medium text-sm drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
-                  {isLoadingStreak ? '...' : streak}
+                  {isLoadingStreak ? '...' : displayStreak}
                 </span>
                 <div className="absolute left-full ml-2 px-3 py-2 bg-black/95 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-xl border border-white/10 backdrop-blur-sm">
                   <div className="flex items-center gap-2">
                     <FireIcon className={`w-4 h-4 ${hasPostedToday ? 'text-orange-400' : 'text-gray-400'}`} />
-                    <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : streak}</span> days</span>
+                    <span>Streak <span className="text-white font-bold">{isLoadingStreak ? '...' : displayStreak}</span> days</span>
                   </div>
                 </div>
               </div>
