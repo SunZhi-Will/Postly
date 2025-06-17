@@ -18,7 +18,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-[English](README.md) | [繁體中文](README_zh-TW.md)
+
 
 </div>
 
