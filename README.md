@@ -1,13 +1,36 @@
-# Postly - Reflection Sharing Community Platform
 # Postly - 反思分享社群平台
+
+<div align="center">
+  <img src="public/logo.png" alt="Postly Logo" width="200"/>
+  <p>
+    <em>Share your reflections, grow together.</em><br>
+    <em>分享你的反思，一起成長。</em>
+  </p>
+</div>
+
+---
+
+<div align="center">
+
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+
+[English](README.md) | [繁體中文](README_zh-TW.md)
+
+</div>
+
+## 🌟 Introduction 介紹
 
 Postly is a community platform focused on personal growth and reflection sharing, allowing users to record and share their daily reflections and insights.
 
 Postly 是一個專注於個人成長和反思分享的社群平台，讓使用者能夠記錄並分享他們的日常反思和見解。
 
-## Features 功能特點
+## ✨ Features 功能特點
 
-### 1. Daily Reflection Prompts 每日反思提示
+### 🎯 Daily Reflection Prompts 每日反思提示
 - Get daily curated reflection topics
 - Guide users through deep thinking
 - Optional prompts that can be toggled
@@ -15,7 +38,7 @@ Postly 是一個專注於個人成長和反思分享的社群平台，讓使用�
 - 引導使用者進行深度思考
 - 可選擇性開啟/關閉提示
 
-### 2. Reflection Sharing 反思分享
+### 💭 Reflection Sharing 反思分享
 - Users can share personal reflections
 - Interactive features (likes, comments)
 - Clean card-based design
@@ -23,7 +46,7 @@ Postly 是一個專注於個人成長和反思分享的社群平台，讓使用�
 - 互動功能（按讚、評論）
 - 清晰的卡片式設計
 
-### 3. Personal Achievements 個人成就
+### 🏆 Personal Achievements 個人成就
 - Streak tracking for continuous reflection
 - Personal trait tags and growth metrics
 - Interaction statistics and engagement analytics
@@ -31,7 +54,7 @@ Postly 是一個專注於個人成長和反思分享的社群平台，讓使用�
 - 個人特質標籤和成長指標
 - 互動統計和參與度分析
 
-### 4. Community Interaction 社群互動
+### 🤝 Community Interaction 社群互動
 - View community members' shares
 - Content sharing functionality
 - Daily featured content recommendations
@@ -41,7 +64,7 @@ Postly 是一個專注於個人成長和反思分享的社群平台，讓使用�
 - 每日精選內容推薦
 - 即時互動通知
 
-## Technical Stack 技術架構
+## 🛠 Technical Stack 技術架構
 
 ### Frontend Technologies 前端技術
 - Next.js 15.3.3 (App Router)
@@ -70,7 +93,7 @@ Postly 是一個專注於個人成長和反思分享的社群平台，讓使用�
 }
 ```
 
-## Project Structure 專案結構
+## 📁 Project Structure 專案結構
 
 ```
 postly/
@@ -93,12 +116,14 @@ postly/
 │   ├── types/                 # TypeScript type definitions
 │   └── utils/                 # Utility functions
 ├── public/                    # Static assets
+│   └── logo.png              # Project logo
+├── .env.example              # Environment variables example
 ├── tailwind.config.ts        # Tailwind CSS configuration
 ├── next.config.ts            # Next.js configuration
 └── package.json              # Project dependencies
 ```
 
-## Getting Started 開始使用
+## 🚀 Getting Started 開始使用
 
 ### Prerequisites 前置需求
 - Node.js 18.0.0 or higher
@@ -106,39 +131,47 @@ postly/
 - Git
 
 ### Environment Setup 環境設定
-Create a `.env.local` file in the root directory with the following variables:
-在根目錄建立 `.env.local` 檔案，並設定以下環境變數：
+1. Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-```
+2. Update the environment variables in `.env.local`:
+   ```bash
+   # Application
+   NEXT_PUBLIC_API_URL=http://localhost:3000
+   
+   # Authentication
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your_nextauth_secret
+   ```
 
 ### Installation 安裝步驟
 
 1. Clone the repository 複製專案
-```bash
-git clone https://github.com/your-username/postly.git
-cd postly
-```
+   ```bash
+   git clone https://github.com/your-username/postly.git
+   cd postly
+   ```
 
 2. Install dependencies 安裝依賴
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. Start development server 啟動開發伺服器
-```bash
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
 
 4. Open browser and visit 開啟瀏覽器並訪問
-```
-http://localhost:3000
-```
+   ```
+   http://localhost:3000
+   ```
 
-## Development Guide 開發指南
+## 👨‍💻 Development Guide 開發指南
 
 ### Code Style 程式碼風格
 - Follow TypeScript strict mode
@@ -168,7 +201,7 @@ http://localhost:3000
 - 根據需求實作 React Context
 - 遵循 React hooks 最佳實踐
 
-## API Documentation API 文件
+## 📚 API Documentation API 文件
 
 ### Authentication 認證
 - Google OAuth2.0 integration
@@ -185,7 +218,7 @@ http://localhost:3000
 - `/api/users/*` - User management
 - `/api/streak/*` - Streak tracking
 
-## Testing 測試
+## 🧪 Testing 測試
 - Unit tests with Jest
 - Integration tests with React Testing Library
 - E2E tests with Cypress
@@ -193,7 +226,7 @@ http://localhost:3000
 - 使用 React Testing Library 進行整合測試
 - 使用 Cypress 進行端對端測試
 
-## Deployment 部署
+## 🚀 Deployment 部署
 
 ### Production Build 生產環境建置
 ```bash
@@ -206,7 +239,7 @@ npm start
 - Docker
 - Self-hosted
 
-## Contributing 貢獻指南
+## 🤝 Contributing 貢獻指南
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -214,13 +247,16 @@ npm start
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License 授權條款
+## 📄 License 授權條款
 MIT License - see the [LICENSE](LICENSE) file for details
 
-## Acknowledgments 致謝
+## 🙏 Acknowledgments 致謝
 - Next.js team for the amazing framework
 - Tailwind CSS team for the utility-first CSS framework
 - All contributors who have helped this project grow
 
 ---
-Built with ❤️ by the Postly Team
+
+<div align="center">
+  <p>Built with ❤️ by Sun</p>
+</div>
